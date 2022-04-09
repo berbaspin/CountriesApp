@@ -10,7 +10,7 @@ import UIKit
 class CountriesListViewController: UIViewController, CountriesListViewProtocol {
 
     @IBOutlet weak var countriesTableView: UITableView!
-    let refreshControl = UIRefreshControl()
+    private let refreshControl = UIRefreshControl()
 
     var presenter: CountriesListPresenterProtocol!
     private var countriesToDisplay = [CountryViewData]()
@@ -22,11 +22,11 @@ class CountriesListViewController: UIViewController, CountriesListViewProtocol {
         let countryCellNib = UINib(nibName: String(describing: CountryCell.self), bundle: nil)
         countriesTableView.register(countryCellNib, forCellReuseIdentifier: String(describing: CountryCell.self))
 
-        refreshControl.addTarget(self, action: #selector(someFunc), for: .valueChanged)
+        refreshControl.addTarget(self, action: #selector(refreshData), for: .valueChanged)
         countriesTableView.refreshControl = refreshControl
     }
 
-    @objc func someFunc() {
+    @objc private func refreshData() {
         presenter.getOneCountry(numberOfCountries: countriesToDisplay.count)
         refreshControl.endRefreshing()
     }
