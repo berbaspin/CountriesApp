@@ -26,7 +26,7 @@ class CountriesListPresenter: CountriesListPresenterProtocol {
     var router: RouterProtocol?
     private var countries = [CountryViewData]()
     private var urlString: String = API.countries
-    
+
     private var numberFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
@@ -34,29 +34,29 @@ class CountriesListPresenter: CountriesListPresenterProtocol {
         formatter.groupingSize = 3
         return formatter
     }()
-    
+
     required init(view: CountriesListViewProtocol, dataFetcher: DataFetcherProtocol, router: RouterProtocol) {
         self.view = view
         self.dataFetcher = dataFetcher
         self.router = router
         getCountries()
     }
-    
+
     func getCountries() {
-        
+
         if let view = view, !view.isLoading {
             if !self.urlString.isEmpty {
                 view.isLoading = true
             }
-            
+
             dataFetcher.getCountries(from: self.urlString) { [weak self] countries, urlString in
                 guard let self = self else { return }
-                
+
                 var durationSeconds = 0.0
                 if self.urlString != API.countries {
                     durationSeconds = 2.0
                 }
-                
+
                 DispatchQueue.main.asyncAfter(deadline: .now() + durationSeconds) {
                     if let countries = countries {
                         let mappedCountries = countries.map {
@@ -75,14 +75,13 @@ class CountriesListPresenter: CountriesListPresenterProtocol {
                         }
                         self.countries += mappedCountries
                         self.view?.setCountries(self.countries)
-                        
-                        
+
                     }
                 }
             }
         }
     }
-    
+
     func getOneCountry(numberOfCountries: Int) {
         if countries.count  == numberOfCountries {
             dataFetcher.getCountries(from: urlString) { [weak self] countries, urlString in
@@ -110,9 +109,9 @@ class CountriesListPresenter: CountriesListPresenterProtocol {
             view?.setOneCountry(countries[numberOfCountries])
         }
     }
-    
+
     func tapOnCountry(country: CountryViewData) {
         router?.showDetails(country: country)
     }
-    
+
 }

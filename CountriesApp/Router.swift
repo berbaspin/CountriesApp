@@ -20,19 +20,19 @@ protocol RouterProtocol: RouterMain {
 class Router: RouterProtocol {
     var navigationController: UINavigationController?
     var assemblyBuilder: AssemblyBuilderProtocol?
-    
+
     init(navigationController: UINavigationController, assemblyBuilder: AssemblyBuilderProtocol) {
         self.navigationController = navigationController
         self.assemblyBuilder = assemblyBuilder
     }
-    
+
     func initialViewController() {
         if let navigationController = navigationController {
             guard let countriesListViewController = assemblyBuilder?.createCoutriesListModule(router: self) else { return }
             navigationController.viewControllers = [countriesListViewController]
         }
     }
-    
+
     func showDetails(country: CountryViewData?) {
         if let navigationController = navigationController {
             guard let detailsViewController = assemblyBuilder?.createCountryDetailsModule(country: country, router: self) else { return }

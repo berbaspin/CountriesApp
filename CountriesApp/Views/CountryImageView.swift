@@ -8,22 +8,18 @@
 import UIKit
 
 class WebImageView: UIImageView {
-    
     func fetchImage(from url: String) {
         guard let imageUrl = URL(string: url) else {
             return
         }
-        
         if let cachedResponse = URLCache.shared.cachedResponse(for: URLRequest(url: imageUrl)) {
             self.image = UIImage(data: cachedResponse.data)
             return
         }
-        
-        ImageManager.shared.getImage(from: imageUrl) { data, response in
+        ImageManager.shared.getImage(from: imageUrl) { [weak self] data, _ in
             DispatchQueue.main.async {
-                self.image = UIImage(data: data)
+                self?.image = UIImage(data: data)
             }
         }
     }
-    
 }

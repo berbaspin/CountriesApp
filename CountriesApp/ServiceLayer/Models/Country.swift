@@ -19,7 +19,7 @@ struct Country: Decodable {
     let description: String
     let image: String
     let countryInfo: CountryInfo
-    
+
     enum CodingKeys: String, CodingKey {
         case name
         case continent

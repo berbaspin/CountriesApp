@@ -12,24 +12,19 @@ protocol ImageManagerProtocol {
 }
 
 class ImageManager: ImageManagerProtocol {
-    
+
     static var shared = ImageManager()
-    
+
     private init() {}
-    
+
     func getImage(from url: URL, completion: @escaping (Data, URLResponse) -> Void) {
         URLSession.shared.dataTask(with: url) { data, response, error in
             guard let data = data, let response = response else {
                 print(error?.localizedDescription ?? "Unknown error")
                 return
             }
-            
-//            if let httpResponse = response as? HTTPURLResponse {
-//                print("statucCode: \(httpResponse.statusCode)")
-//            }
-            
             completion(data, response)
         }.resume()
     }
-    
+
 }

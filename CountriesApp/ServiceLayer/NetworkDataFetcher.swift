@@ -12,13 +12,13 @@ protocol DataFetcherProtocol {
 }
 
 class NetworkDataFetcher: DataFetcherProtocol {
-    
+
     let networkService: NetworkService
-    
+
     init(networkService: NetworkService) {
         self.networkService = networkService
     }
-    
+
     func getCountries(from urlString: String, response: @escaping ([Country]?, String?) -> Void) {
         networkService.request(urlString: urlString) { [weak self] data, error in
             if let error = error {
@@ -28,11 +28,11 @@ class NetworkDataFetcher: DataFetcherProtocol {
             response(decoded?.countries, decoded?.next)
         }
     }
-    
+
     private func decodeJSON<T: Decodable>(type: T.Type, from data: Data?) -> T? {
         let decoder = JSONDecoder()
         guard let data = data else { return nil }
-        
+
         do {
             let decodedData = try decoder.decode(type.self, from: data)
             return decodedData
@@ -40,7 +40,7 @@ class NetworkDataFetcher: DataFetcherProtocol {
             print("Failed \(error.localizedDescription)")
             return nil
         }
-        
+
     }
-    
+
 }

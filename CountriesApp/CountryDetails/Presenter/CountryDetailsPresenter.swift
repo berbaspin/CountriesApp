@@ -17,19 +17,19 @@ protocol CountryDetailsPresenterProtocol: AnyObject {
 }
 
 class CountryDetailsPresenter: CountryDetailsPresenterProtocol {
-    
+
     weak var view: CountryDetailViewProtocol?
     var router: RouterProtocol?
-    var country: CountryViewData?    
-    
+    var country: CountryViewData?
+
     required init(view: CountryDetailViewProtocol, router: RouterProtocol, country: CountryViewData?) {
         self.view = view
         self.router = router
         self.country = country
     }
-    
+
     func setCountry() {
         view?.setCountry(country: country)
     }
-    
+
 }

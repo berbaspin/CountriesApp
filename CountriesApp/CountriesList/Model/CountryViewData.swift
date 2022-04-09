@@ -8,7 +8,7 @@
 import Foundation
 
 struct CountryViewData {
-    
+
     let name: String
     let capital: String
     let population: String
@@ -17,5 +17,5 @@ struct CountryViewData {
     let shortDescription: String
     let flag: String
     let images: [String]
-    
+
 }
