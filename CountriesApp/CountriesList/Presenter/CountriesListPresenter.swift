@@ -10,10 +10,11 @@ import Foundation
 protocol CountriesListViewProtocol: AnyObject {
     func setCountries(_ countries: [CountryViewData])
     func setOneCountry(_ country: CountryViewData)
-    var isLoading: Bool { get set }
+    var isLoading: Bool { get set } // Я бы передавал isLoading в setCountries. Не понял зачем свойство нужно
 }
 
 protocol CountriesListPresenterProtocol: AnyObject {
+  // зачем init в протоколе?
     init(view: CountriesListViewProtocol, dataFetcher: DataFetcherProtocol, router: RouterProtocol)
     func getCountries()
     func getOneCountry(numberOfCountries: Int)
@@ -23,7 +24,7 @@ protocol CountriesListPresenterProtocol: AnyObject {
 class CountriesListPresenter: CountriesListPresenterProtocol {
     weak var view: CountriesListViewProtocol?
     let dataFetcher: DataFetcherProtocol!
-    var router: RouterProtocol?
+    var router: RouterProtocol? // а почему роутер публичный?
     private var countries = [CountryViewData]()
     private var urlString: String = API.countries
 
@@ -44,7 +45,7 @@ class CountriesListPresenter: CountriesListPresenterProtocol {
 
     func getCountries() {
 
-        if let view = view, !view.isLoading {
+        if let view = view, !view.isLoading { // guard
             if !self.urlString.isEmpty {
                 view.isLoading = true
             }
@@ -54,12 +55,13 @@ class CountriesListPresenter: CountriesListPresenterProtocol {
 
                 var durationSeconds = 0.0
                 if self.urlString != API.countries {
-                    durationSeconds = 2.0
+                    durationSeconds = 2.0 // это пауза, чтобы показать загрузку? Нужно добавить об этом явный комментарий для ревьюевеа
                 }
 
                 DispatchQueue.main.asyncAfter(deadline: .now() + durationSeconds) {
                     if let countries = countries {
                         let mappedCountries = countries.map {
+                          // вот в этом моменте тебя должен посещать вопрос - кажется у меня уже вложенность пять скобок. Что-то не так
                             return CountryViewData(name: $0.name,
                                                    capital: $0.capital,
                                                    population: self.numberFormatter.string(from: $0.population as NSNumber) ?? "0",
@@ -83,13 +85,13 @@ class CountriesListPresenter: CountriesListPresenterProtocol {
     }
 
     func getOneCountry(numberOfCountries: Int) {
-        if countries.count  == numberOfCountries {
+        if countries.count  == numberOfCountries { // guard
             dataFetcher.getCountries(from: urlString) { [weak self] countries, urlString in
                 guard let self = self else { return }
                 if let countries = countries {
                     let mappedCountries = countries.map {
                         return CountryViewData(name: $0.name,
-                                               capital: $0.capital,
+                                               capital: $0.capital, // нужно переиспользовать код создания CountryViewData
                                                population: self.numberFormatter.string(from: $0.population as NSNumber) ?? "0",
                                                continent: $0.continent,
                                                description: $0.description,

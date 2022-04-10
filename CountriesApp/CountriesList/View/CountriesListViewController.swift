@@ -9,16 +9,16 @@ import UIKit
 
 class CountriesListViewController: UIViewController, CountriesListViewProtocol {
 
-    @IBOutlet weak var countriesTableView: UITableView!
+    @IBOutlet weak var countriesTableView: UITableView! // weak не надо. Все свойства приватные
     private let refreshControl = UIRefreshControl()
 
     var presenter: CountriesListPresenterProtocol!
     private var countriesToDisplay = [CountryViewData]()
-    var isLoading = false
+    var isLoading = false // это должно быть в презентере
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.title = "Countries"
+        self.title = "Countries" // Я бы добавил NSLocalizedString просто чтобы показать что ты знаешь что это
         let countryCellNib = UINib(nibName: String(describing: CountryCell.self), bundle: nil)
         countriesTableView.register(countryCellNib, forCellReuseIdentifier: String(describing: CountryCell.self))
 
@@ -39,10 +39,12 @@ class CountriesListViewController: UIViewController, CountriesListViewProtocol {
     }
 
     func setOneCountry(_ country: CountryViewData) {
-        countriesToDisplay.insert(country, at: 0)
+        countriesToDisplay.insert(country, at: 0) // на звонке обсудим. Я не понял) Типа имитация pull to refresh?
         countriesTableView.reloadData()
     }
 }
+
+// MARK: - UITableViewDataSource // покажу как этим пользоваться в xcode
 
 extension CountriesListViewController: UITableViewDataSource {
 
@@ -55,29 +57,31 @@ extension CountriesListViewController: UITableViewDataSource {
         let countryViewData = countriesToDisplay[indexPath.row]
         cell?.setup(country: countryViewData)
         return cell ?? UITableViewCell()
-
     }
 
-    private func createSpinerFooter() -> UIView {
+    private func createSpinerFooter() -> UIView { // это не относится к UITAbleViewDataSource, убирай в отдельный экстеншн
         let footerView = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.size.width, height: 100))
 
         let spinner = UIActivityIndicatorView()
-        spinner.center = footerView.center
+        spinner.center = footerView.center // а если телефон повернуть, acitivity indicator останется по центру?
         footerView.addSubview(spinner)
         spinner.startAnimating()
 
         return footerView
     }
 
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) { // опять же, это не UITableViewDataSource
         let offsetY = scrollView.contentOffset.y
 
-        if offsetY > (countriesTableView.contentSize.height - scrollView.frame.size.height) {
+        if offsetY > (countriesTableView.contentSize.height - scrollView.frame.size.height) {// guard
             if isLoading {
                 countriesTableView.tableFooterView = createSpinerFooter()
             } else {
                 countriesTableView.tableFooterView = nil
             }
+          //  countriesTableView.tableFooterView = createSpinerFooter() // где-то наверху
+          // countriesTableView.isHidden = !isLoading // здесь
+          // создавать view дорого, лучше переиспользовать
 
             presenter.getCountries()
         }

@@ -12,6 +12,10 @@ class CountryDetailsViewController: UIViewController {
     @IBOutlet weak var imagesCollectionView: UICollectionView!
     @IBOutlet weak var imagesPageControl: UIPageControl!
     @IBOutlet weak var informationTableView: UITableView!
+  // не твоя вина, что тебе попался старый туториал. Я бы допилил это тестовое так, а следующее сделал по-другому
+  // в iOS 13 появился Compositional layout, который позволяет сделать такой экран со скролом в разные стороны одной функцией - https://betterprogramming.pub/ios-13-compositional-layouts-in-collectionview-90a574b410b8
+  // и появился NSDiffableDataSource, который позволяет избавиться от UITableViewDataSource. https://www.raywenderlich.com/8241072-ios-tutorial-collection-view-and-diffable-data-source
+  // Переспроси об этом на звонке, но вкратце: сейчас у всех датасорсы и делегаты. Но новые способы тоже надо знать, они объективно лучше удобнее и красивее.
     @IBOutlet weak var descriptionLabel: UILabel!
     @IBOutlet weak var nameLabel: UILabel!
 
@@ -28,6 +32,7 @@ class CountryDetailsViewController: UIViewController {
         imagesPageControl.numberOfPages = countryToDisplay?.images.count ?? 0
         nameLabel.text = countryToDisplay?.name
         descriptionLabel.text = countryToDisplay?.description
+      // viewDidLoad лучше разгружать. Выносить в отдельные приватные методы setupTableView()
     }
 
 }
@@ -38,6 +43,8 @@ extension CountryDetailsViewController: CountryDetailViewProtocol {
     }
 }
 
+
+// не надо все валить в отдин extension
 extension CountryDetailsViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         countryToDisplay?.images.count ?? 0
@@ -53,7 +60,7 @@ extension CountryDetailsViewController: UICollectionViewDelegate, UICollectionVi
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: imagesCollectionView.frame.width, height: imagesCollectionView.frame.height)
+        CGSize(width: imagesCollectionView.frame.width, height: imagesCollectionView.frame.height)
 
     }
 
@@ -71,6 +78,7 @@ extension CountryDetailsViewController: UITableViewDelegate, UITableViewDataSour
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: InformationCell.self), for: indexPath) as? InformationCell
 
+      // этому место в ячейке
         switch indexPath.row {
         case 0:
             cell?.fieldImage.image = UIImage(systemName: "star")

@@ -15,6 +15,7 @@ class ImageManager: ImageManagerProtocol {
 
     static var shared = ImageManager()
 
+  // c URLSession тоже самое что и в Network
     private init() {}
 
     func getImage(from url: URL, completion: @escaping (Data, URLResponse) -> Void) {

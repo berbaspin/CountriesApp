@@ -12,7 +12,7 @@ class CountryDetailsCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var image: WebImageView!
 
     func setup(imageString: String) {
-        DispatchQueue.main.async {
+        DispatchQueue.main.async { // зачем?
             self.image.fetchImage(from: imageString)
         }
     }

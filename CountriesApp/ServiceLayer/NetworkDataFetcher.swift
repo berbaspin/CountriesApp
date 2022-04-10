@@ -11,11 +11,11 @@ protocol DataFetcherProtocol {
     func getCountries(from urlString: String, response: @escaping ([Country]?, String?) -> Void)
 }
 
-class NetworkDataFetcher: DataFetcherProtocol {
+class NetworkDataFetcher: DataFetcherProtocol { // Я бы назвал CountriesDataFetcher. Network слишком в общем
 
-    let networkService: NetworkService
+  /*private */ let networkService: NetworkService
 
-    init(networkService: NetworkService) {
+    init(networkService: NetworkService) { // а почему не протокол а класс?
         self.networkService = networkService
     }
 
@@ -30,7 +30,7 @@ class NetworkDataFetcher: DataFetcherProtocol {
     }
 
     private func decodeJSON<T: Decodable>(type: T.Type, from data: Data?) -> T? {
-        let decoder = JSONDecoder()
+        let decoder = JSONDecoder() // можно сделать свойством приватном
         guard let data = data else { return nil }
 
         do {

@@ -25,14 +25,16 @@ struct Country: Decodable {
         case continent
         case capital
         case population
-        case descriptionSmall = "description_small"
+        case descriptionSmall = "description_small" // если ты указал ключи только для этого то jsonDecoder.keyDecodingStrategy = .decodeFromSnakeCase
         case description
         case image
         case countryInfo = "country_info"
     }
 }
 
+// extension Country {
 struct CountryInfo: Decodable {
     let images: [String]
     let flag: String
 }
+// }

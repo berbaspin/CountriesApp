@@ -12,6 +12,7 @@ protocol CountryDetailViewProtocol: AnyObject {
 }
 
 protocol CountryDetailsPresenterProtocol: AnyObject {
+  // зачем init
     init(view: CountryDetailViewProtocol, router: RouterProtocol, country: CountryViewData?)
     func setCountry()
 }
@@ -19,7 +20,7 @@ protocol CountryDetailsPresenterProtocol: AnyObject {
 class CountryDetailsPresenter: CountryDetailsPresenterProtocol {
 
     weak var view: CountryDetailViewProtocol?
-    var router: RouterProtocol?
+    var router: RouterProtocol? // зачем публичные
     var country: CountryViewData?
 
     required init(view: CountryDetailViewProtocol, router: RouterProtocol, country: CountryViewData?) {
