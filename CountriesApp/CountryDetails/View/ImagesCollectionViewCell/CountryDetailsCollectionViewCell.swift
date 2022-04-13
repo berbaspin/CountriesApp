@@ -2,18 +2,18 @@
 //  CountryDetailsCollectionViewCell.swift
 //  CountriesApp
 //
-//  Created by Дмитрий Бабаев on 06.04.2022.
+//  Created by Dmitry Babaev on 06.04.2022.
 //
 
 import UIKit
 
 class CountryDetailsCollectionViewCell: UICollectionViewCell {
 
-    @IBOutlet weak var image: WebImageView!
+    @IBOutlet private var image: UIImageView!
 
     func setup(imageString: String) {
-        DispatchQueue.main.async {
-            self.image.fetchImage(from: imageString)
+        DispatchQueue.main.async { [weak self] in
+            self?.image.load(from: imageString)
         }
     }
 

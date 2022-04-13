@@ -2,7 +2,7 @@
 //  CountryViewData.swift
 //  CountriesApp
 //
-//  Created by Дмитрий Бабаев on 06.04.2022.
+//  Created by Dmitry Babaev on 06.04.2022.
 //
 
 import Foundation

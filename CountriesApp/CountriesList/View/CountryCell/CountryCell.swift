@@ -2,18 +2,18 @@
 //  CountryCell.swift
 //  CountriesApp
 //
-//  Created by Дмитрий Бабаев on 05.04.2022.
+//  Created by Dmitry Babaev on 05.04.2022.
 //
 
 import UIKit
 
 class CountryCell: UITableViewCell {
 
-    @IBOutlet weak var countryImage: WebImageView!
-    @IBOutlet weak var nameLabel: UILabel!
-    @IBOutlet weak var capitalLabel: UILabel!
-    @IBOutlet weak var descriptionLabel: UILabel!
-    @IBOutlet weak var imageActivityIndicator: UIActivityIndicatorView!
+    @IBOutlet private var countryImage: UIImageView!
+    @IBOutlet private var nameLabel: UILabel!
+    @IBOutlet private var capitalLabel: UILabel!
+    @IBOutlet private var descriptionLabel: UILabel!
+    @IBOutlet private var imageActivityIndicator: UIActivityIndicatorView!
 
     func setup(country: CountryViewData) {
         nameLabel.text = country.name
@@ -23,8 +23,8 @@ class CountryCell: UITableViewCell {
         imageActivityIndicator.startAnimating()
         imageActivityIndicator.hidesWhenStopped = true
 
+        self.countryImage.load(from: country.flag)
         DispatchQueue.main.async {
-            self.countryImage.fetchImage(from: country.flag)
             self.imageActivityIndicator.stopAnimating()
         }
 

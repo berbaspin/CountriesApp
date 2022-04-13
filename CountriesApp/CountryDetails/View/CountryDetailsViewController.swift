@@ -2,19 +2,19 @@
 //  CountryDetailsViewController.swift
 //  CountriesApp
 //
-//  Created by Дмитрий Бабаев on 06.04.2022.
+//  Created by Dmitry Babaev on 06.04.2022.
 //
 
 import UIKit
 
 class CountryDetailsViewController: UIViewController {
 
-    @IBOutlet weak var imagesCollectionView: UICollectionView!
-    @IBOutlet weak var imagesPageControl: UIPageControl!
-    @IBOutlet weak var informationTableView: UITableView!
-    @IBOutlet weak var descriptionLabel: UILabel!
-    @IBOutlet weak var nameLabel: UILabel!
-
+    @IBOutlet private var imagesCollectionView: UICollectionView!
+    @IBOutlet private var imagesPageControl: UIPageControl!
+    @IBOutlet private var informationTableView: UITableView!
+    @IBOutlet private var descriptionLabel: UILabel!
+    @IBOutlet private var nameLabel: UILabel!
+    // swiftlint:disable:next implicitly_unwrapped_optional
     var presenter: CountryDetailsPresenterProtocol!
     private var countryToDisplay: CountryViewData?
 
@@ -22,29 +22,47 @@ class CountryDetailsViewController: UIViewController {
         super.viewDidLoad()
         presenter.setCountry()
         let imageCell = UINib(nibName: String(describing: CountryDetailsCollectionViewCell.self), bundle: nil)
-        imagesCollectionView.register(imageCell, forCellWithReuseIdentifier: String(describing: CountryDetailsCollectionViewCell.self))
+        imagesCollectionView.register(
+            imageCell, forCellWithReuseIdentifier: String(describing: CountryDetailsCollectionViewCell.self)
+        )
         let informationCell = UINib(nibName: String(describing: InformationCell.self), bundle: nil)
         informationTableView.register(informationCell, forCellReuseIdentifier: String(describing: InformationCell.self))
-        imagesPageControl.numberOfPages = countryToDisplay?.images.count ?? 0
+        setupImagesPageControl()
         nameLabel.text = countryToDisplay?.name
         descriptionLabel.text = countryToDisplay?.description
+    }
+
+    private func setupImagesPageControl() {
+        guard let countryToDisplay = countryToDisplay else {
+            return
+        }
+        if countryToDisplay.images.count > 1 {
+            imagesPageControl.numberOfPages = countryToDisplay.images.count
+        } else {
+            imagesPageControl.isHidden = true
+        }
     }
 
 }
 
 extension CountryDetailsViewController: CountryDetailViewProtocol {
-    func setCountry(country: CountryViewData?) {
+    func setCountry(country: CountryViewData) {
         countryToDisplay = country
     }
 }
 
-extension CountryDetailsViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+extension CountryDetailsViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         countryToDisplay?.images.count ?? 0
     }
 
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: String(describing: CountryDetailsCollectionViewCell.self), for: indexPath) as? CountryDetailsCollectionViewCell
+    func collectionView(
+        _ collectionView: UICollectionView,
+        cellForItemAt indexPath: IndexPath
+    ) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: String(describing: CountryDetailsCollectionViewCell.self), for: indexPath
+        ) as? CountryDetailsCollectionViewCell
         if let country = countryToDisplay {
             cell?.setup(imageString: country.images[indexPath.row])
         }
@@ -52,8 +70,12 @@ extension CountryDetailsViewController: UICollectionViewDelegate, UICollectionVi
         return cell ?? UICollectionViewCell()
     }
 
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: imagesCollectionView.frame.width, height: imagesCollectionView.frame.height)
+    func collectionView(
+        _ collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        sizeForItemAt indexPath: IndexPath
+    ) -> CGSize {
+        CGSize(width: imagesCollectionView.frame.width, height: imagesCollectionView.frame.height)
 
     }
 
@@ -63,30 +85,21 @@ extension CountryDetailsViewController: UICollectionViewDelegate, UICollectionVi
 
 }
 
-extension CountryDetailsViewController: UITableViewDelegate, UITableViewDataSource {
+// MARK: - UITableViewDataSource
+
+extension CountryDetailsViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         3
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: InformationCell.self), for: indexPath) as? InformationCell
-
-        switch indexPath.row {
-        case 0:
-            cell?.fieldImage.image = UIImage(systemName: "star")
-            cell?.fieldLabel.text = "Capital"
-            cell?.countryDetailLabel.text = countryToDisplay?.capital
-        case 1:
-            cell?.fieldImage.image = UIImage(systemName: "face.smiling")
-            cell?.fieldLabel.text = "Population"
-            cell?.countryDetailLabel.text = countryToDisplay?.population
-        case 2:
-            cell?.fieldImage.image = UIImage(systemName: "globe.asia.australia")
-            cell?.fieldLabel.text = "Continent"
-            cell?.countryDetailLabel.text = countryToDisplay?.continent
-        default:
-            cell?.fieldLabel.text = "???"
+    let cell = tableView.dequeueReusableCell(
+        withIdentifier: String(describing: InformationCell.self), for: indexPath
+    ) as? InformationCell
+        guard let countryToDisplay = countryToDisplay else {
+            return  UITableViewCell()
         }
+        cell?.setup(index: indexPath.row, country: countryToDisplay)
 
         return cell ?? UITableViewCell()
     }

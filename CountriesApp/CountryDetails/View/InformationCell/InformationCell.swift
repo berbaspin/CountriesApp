@@ -2,24 +2,35 @@
 //  InformationTableViewCell.swift
 //  CountriesApp
 //
-//  Created by Дмитрий Бабаев on 06.04.2022.
+//  Created by Dmitry Babaev on 06.04.2022.
 //
 
 import UIKit
 
 class InformationCell: UITableViewCell {
 
-    @IBOutlet weak var fieldImage: UIImageView!
-    @IBOutlet weak var fieldLabel: UILabel!
-    @IBOutlet weak var countryDetailLabel: UILabel!
+    @IBOutlet private var fieldImage: UIImageView!
+    @IBOutlet private var fieldLabel: UILabel!
+    @IBOutlet private var countryDetailLabel: UILabel!
 
-    override func awakeFromNib() {
-        super.awakeFromNib()
-    }
+    func setup(index: Int, country: CountryViewData) {
 
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
+        switch index {
+        case 0:
+            fieldImage.image = UIImage(systemName: "star")
+            fieldLabel.text = "Capital"
+            countryDetailLabel.text = country.capital
+        case 1:
+            fieldImage.image = UIImage(systemName: "face.smiling")
+            fieldLabel.text = "Population"
+            countryDetailLabel.text = country.population
+        case 2:
+            fieldImage.image = UIImage(systemName: "globe.asia.australia")
+            fieldLabel.text = "Continent"
+            countryDetailLabel.text = country.continent
+        default:
+            fieldLabel.text = "???"
+        }
     }
 
 }

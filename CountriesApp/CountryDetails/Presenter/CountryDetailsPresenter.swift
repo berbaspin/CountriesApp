@@ -2,17 +2,16 @@
 //  CountryDetailsPresenter.swift
 //  CountriesApp
 //
-//  Created by Дмитрий Бабаев on 04.04.2022.
+//  Created by Dmitry Babaev on 04.04.2022.
 //
 
 import Foundation
 
 protocol CountryDetailViewProtocol: AnyObject {
-    func setCountry(country: CountryViewData?)
+    func setCountry(country: CountryViewData)
 }
 
 protocol CountryDetailsPresenterProtocol: AnyObject {
-    init(view: CountryDetailViewProtocol, router: RouterProtocol, country: CountryViewData?)
     func setCountry()
 }
 
@@ -22,13 +21,16 @@ class CountryDetailsPresenter: CountryDetailsPresenterProtocol {
     var router: RouterProtocol?
     var country: CountryViewData?
 
-    required init(view: CountryDetailViewProtocol, router: RouterProtocol, country: CountryViewData?) {
+    init(view: CountryDetailViewProtocol, router: RouterProtocol, country: CountryViewData?) {
         self.view = view
         self.router = router
         self.country = country
     }
 
     func setCountry() {
+        guard let country = country else {
+            return
+        }
         view?.setCountry(country: country)
     }
 

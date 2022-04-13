@@ -18,7 +18,7 @@
 		137A9C9227FB7B4D00282214 /* Country.swift in Sources */ = {isa = PBXBuildFile; fileRef = 137A9C9127FB7B4D00282214 /* Country.swift */; };
 		13E1641627FD7DAE0060F58C /* CountryViewData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13E1641527FD7DAE0060F58C /* CountryViewData.swift */; };
 		13E1641927FD85840060F58C /* ImageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13E1641827FD85840060F58C /* ImageManager.swift */; };
-		13E1641B27FD895C0060F58C /* CountryImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13E1641A27FD895B0060F58C /* CountryImageView.swift */; };
+		13E1641B27FD895C0060F58C /* UIImageView+Load.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13E1641A27FD895B0060F58C /* UIImageView+Load.swift */; };
 		13E1641E27FDA17F0060F58C /* CountryDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13E1641C27FDA17F0060F58C /* CountryDetailsViewController.swift */; };
 		13E1641F27FDA17F0060F58C /* CountryDetailsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13E1641D27FDA17F0060F58C /* CountryDetailsViewController.xib */; };
 		13E1642227FDBB260060F58C /* CountryDetailsCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13E1642027FDBB260060F58C /* CountryDetailsCollectionViewCell.swift */; };
@@ -49,7 +49,7 @@
 		137A9C9127FB7B4D00282214 /* Country.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Country.swift; sourceTree = "<group>"; };
 		13E1641527FD7DAE0060F58C /* CountryViewData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryViewData.swift; sourceTree = "<group>"; };
 		13E1641827FD85840060F58C /* ImageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageManager.swift; sourceTree = "<group>"; };
-		13E1641A27FD895B0060F58C /* CountryImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryImageView.swift; sourceTree = "<group>"; };
+		13E1641A27FD895B0060F58C /* UIImageView+Load.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Load.swift"; sourceTree = "<group>"; };
 		13E1641C27FDA17F0060F58C /* CountryDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryDetailsViewController.swift; sourceTree = "<group>"; };
 		13E1641D27FDA17F0060F58C /* CountryDetailsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CountryDetailsViewController.xib; sourceTree = "<group>"; };
 		13E1642027FDBB260060F58C /* CountryDetailsCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryDetailsCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -101,7 +101,7 @@
 				13E2FDFD27FC872200B88326 /* ServiceLayer */,
 				137A9C8B27FB794C00282214 /* CountryDetails */,
 				137A9C8A27FB793200282214 /* CountriesList */,
-				13E1645728006A070060F58C /* Views */,
+				13E1645728006A070060F58C /* Extensions */,
 				137A9C7127FB749600282214 /* AppDelegate.swift */,
 				137A9C7327FB749600282214 /* SceneDelegate.swift */,
 				137A9C7D27FB749800282214 /* Assets.xcassets */,
@@ -193,12 +193,12 @@
 			path = CountryCell;
 			sourceTree = "<group>";
 		};
-		13E1645728006A070060F58C /* Views */ = {
+		13E1645728006A070060F58C /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				13E1641A27FD895B0060F58C /* CountryImageView.swift */,
+				13E1641A27FD895B0060F58C /* UIImageView+Load.swift */,
 			);
-			path = Views;
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 		13E2FDF927FC865F00B88326 /* View */ = {
@@ -342,7 +342,7 @@
 				137A9C9227FB7B4D00282214 /* Country.swift in Sources */,
 				13E16456280042E50060F58C /* API.swift in Sources */,
 				137A9C8F27FB798600282214 /* CountryDetailsPresenter.swift in Sources */,
-				13E1641B27FD895C0060F58C /* CountryImageView.swift in Sources */,
+				13E1641B27FD895C0060F58C /* UIImageView+Load.swift in Sources */,
 				13E2FE0327FC8DB600B88326 /* Router.swift in Sources */,
 				13E2FDFC27FC871100B88326 /* NetworkService.swift in Sources */,
 				137A9C7427FB749600282214 /* SceneDelegate.swift in Sources */,

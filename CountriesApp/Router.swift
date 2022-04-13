@@ -2,22 +2,17 @@
 //  Router.swift
 //  CountriesApp
 //
-//  Created by Дмитрий Бабаев on 05.04.2022.
+//  Created by Dmitry Babaev on 05.04.2022.
 //
 
 import UIKit
 
-protocol RouterMain {
-    var navigationController: UINavigationController? { get set }
-    var assemblyBuilder: AssemblyBuilderProtocol? { get set }
+protocol RouterProtocol {
+    func initializeViewController()
+    func showDetails(country: CountryViewData)
 }
 
-protocol RouterProtocol: RouterMain {
-    func initialViewController()
-    func showDetails(country: CountryViewData?)
-}
-
-class Router: RouterProtocol {
+final class Router: RouterProtocol {
     var navigationController: UINavigationController?
     var assemblyBuilder: AssemblyBuilderProtocol?
 
@@ -26,17 +21,19 @@ class Router: RouterProtocol {
         self.assemblyBuilder = assemblyBuilder
     }
 
-    func initialViewController() {
-        if let navigationController = navigationController {
-            guard let countriesListViewController = assemblyBuilder?.createCoutriesListModule(router: self) else { return }
-            navigationController.viewControllers = [countriesListViewController]
+    func initializeViewController() {
+        guard let navigationController = navigationController,
+        let countriesListViewController = assemblyBuilder?.createCoutriesListModule(router: self) else {
+            return
         }
+        navigationController.viewControllers = [countriesListViewController]
     }
 
-    func showDetails(country: CountryViewData?) {
-        if let navigationController = navigationController {
-            guard let detailsViewController = assemblyBuilder?.createCountryDetailsModule(country: country, router: self) else { return }
-            navigationController.pushViewController(detailsViewController, animated: true)
+    func showDetails(country: CountryViewData) {
+        guard let navigationController = navigationController,
+        let detailsViewController = assemblyBuilder?.createCountryDetailsModule(country: country, router: self) else {
+            return
         }
+        navigationController.pushViewController(detailsViewController, animated: true)
     }
 }

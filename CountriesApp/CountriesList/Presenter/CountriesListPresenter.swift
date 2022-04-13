@@ -2,28 +2,28 @@
 //  CountriesListPresenter.swift
 //  CountriesApp
 //
-//  Created by Дмитрий Бабаев on 04.04.2022.
+//  Created by Dmitry Babaev on 04.04.2022.
 //
 
 import Foundation
 
 protocol CountriesListViewProtocol: AnyObject {
-    func setCountries(_ countries: [CountryViewData])
-    func setOneCountry(_ country: CountryViewData)
+    func setMoreCountries(_ countries: [CountryViewData])
+    func setLatestCountries(_ countries: [CountryViewData])
     var isLoading: Bool { get set }
 }
 
 protocol CountriesListPresenterProtocol: AnyObject {
-    init(view: CountriesListViewProtocol, dataFetcher: DataFetcherProtocol, router: RouterProtocol)
-    func getCountries()
-    func getOneCountry(numberOfCountries: Int)
+    func getMoreCountries()
+    func getLatestCountries()
     func tapOnCountry(country: CountryViewData)
 }
 
 class CountriesListPresenter: CountriesListPresenterProtocol {
     weak var view: CountriesListViewProtocol?
+    // swiftlint:disable:next implicitly_unwrapped_optional
     let dataFetcher: DataFetcherProtocol!
-    var router: RouterProtocol?
+    private var router: RouterProtocol?
     private var countries = [CountryViewData]()
     private var urlString: String = API.countries
 
@@ -35,78 +35,97 @@ class CountriesListPresenter: CountriesListPresenterProtocol {
         return formatter
     }()
 
-    required init(view: CountriesListViewProtocol, dataFetcher: DataFetcherProtocol, router: RouterProtocol) {
+    init(view: CountriesListViewProtocol, dataFetcher: DataFetcherProtocol, router: RouterProtocol) {
         self.view = view
         self.dataFetcher = dataFetcher
         self.router = router
-        getCountries()
+        getLatestCountries()
     }
 
-    func getCountries() {
+    func getMoreCountries() {
+        guard let view = view, !view.isLoading else {
+            return
+        }
+        if !urlString.isEmpty {
+            view.isLoading = true
 
-        if let view = view, !view.isLoading {
-            if !self.urlString.isEmpty {
-                view.isLoading = true
-            }
-
-            dataFetcher.getCountries(from: self.urlString) { [weak self] countries, urlString in
-                guard let self = self else { return }
-
+            getCountries(from: urlString) { [weak self] countries, urlString in
+                guard let self = self else {
+                    return
+                }
                 var durationSeconds = 0.0
                 if self.urlString != API.countries {
                     durationSeconds = 2.0
                 }
-
-                DispatchQueue.main.asyncAfter(deadline: .now() + durationSeconds) {
-                    if let countries = countries {
-                        let mappedCountries = countries.map {
-                            return CountryViewData(name: $0.name,
-                                                   capital: $0.capital,
-                                                   population: self.numberFormatter.string(from: $0.population as NSNumber) ?? "0",
-                                                   continent: $0.continent,
-                                                   description: $0.description,
-                                                   shortDescription: $0.descriptionSmall ?? "",
-                                                   flag: $0.countryInfo.flag,
-                                                   images: $0.countryInfo.images.isEmpty ? [$0.countryInfo.flag] : $0.countryInfo.images
-                            )
-                        }
-                        if let urlString = urlString {
-                            self.urlString = urlString
-                        }
-                        self.countries += mappedCountries
-                        self.view?.setCountries(self.countries)
-
-                    }
+                if let urlString = urlString {
+                    self.urlString = urlString
                 }
+                self.countries += countries
+                self.setCountries(duration: durationSeconds)
+            }
+        } else {
+            if !self.countries.isEmpty {
+                view.isLoading = true
+            }
+            setCountries(duration: 2.0)
+        }
+    }
+// duration is a delay for displaying pagination
+    private func setCountries(duration: Double) {
+        var elements = [CountryViewData]()
+        if countries.count > 3 {
+            elements = Array(countries.prefix(4))
+            countries = Array(countries[4 ..< countries.count])
+        } else {
+            elements = Array(countries.prefix(countries.count))
+            countries = []
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
+            if !elements.isEmpty {
+                self.view?.setMoreCountries(elements)
             }
         }
     }
 
-    func getOneCountry(numberOfCountries: Int) {
-        if countries.count  == numberOfCountries {
-            dataFetcher.getCountries(from: urlString) { [weak self] countries, urlString in
-                guard let self = self else { return }
-                if let countries = countries {
-                    let mappedCountries = countries.map {
-                        return CountryViewData(name: $0.name,
-                                               capital: $0.capital,
-                                               population: self.numberFormatter.string(from: $0.population as NSNumber) ?? "0",
-                                               continent: $0.continent,
-                                               description: $0.description,
-                                               shortDescription: $0.descriptionSmall ?? "",
-                                               flag: $0.countryInfo.flag,
-                                               images: $0.countryInfo.images.isEmpty ? [$0.countryInfo.flag] : $0.countryInfo.images
-                        )
-                    }
-                    if let urlString = urlString {
-                        self.urlString = urlString
-                    }
-                    self.countries += mappedCountries
-                    self.view?.setOneCountry(self.countries[numberOfCountries])
-                }
+    func getLatestCountries() {
+        guard let view = view, !view.isLoading else {
+            return
+        }
+        view.isLoading = true
+        getCountries(from: API.countries) { [weak self] countries, urlString in
+            guard let self = self else {
+                return
             }
-        } else {
-            view?.setOneCountry(countries[numberOfCountries])
+            if let urlString = urlString {
+                self.urlString = urlString
+            }
+
+            let elements = Array(countries.prefix(4))
+            self.countries = Array(countries[4 ..< countries.count])
+            DispatchQueue.main.async {
+                self.view?.setLatestCountries(elements)
+            }
+        }
+    }
+
+    private func getCountries(from urlString: String, completion: @escaping ([CountryViewData], String?) -> Void) {
+        dataFetcher.getCountries(from: urlString) { [weak self] countries, urlString in
+            guard let self = self else {
+                return
+            }
+            let mappedCountries = countries.map {
+                CountryViewData(
+                    name: $0.name,
+                    capital: $0.capital,
+                    population: self.numberFormatter.string(from: $0.population as NSNumber) ?? "0",
+                    continent: $0.continent,
+                    description: $0.description,
+                    shortDescription: $0.descriptionSmall ?? "",
+                    flag: $0.countryInfo.flag,
+                    images: $0.countryInfo.images.isEmpty ? [$0.countryInfo.flag] : $0.countryInfo.images
+                )
+            }
+            completion(mappedCountries, urlString)
         }
     }
 

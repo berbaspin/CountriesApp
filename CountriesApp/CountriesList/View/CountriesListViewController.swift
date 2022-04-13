@@ -2,23 +2,23 @@
 //  ViewController.swift
 //  CountriesApp
 //
-//  Created by Дмитрий Бабаев on 04.04.2022.
+//  Created by Dmitry Babaev on 04.04.2022.
 //
 
 import UIKit
 
 class CountriesListViewController: UIViewController, CountriesListViewProtocol {
 
-    @IBOutlet weak var countriesTableView: UITableView!
+    @IBOutlet private var countriesTableView: UITableView!
     private let refreshControl = UIRefreshControl()
-
+    // swiftlint:disable:next implicitly_unwrapped_optional
     var presenter: CountriesListPresenterProtocol!
     private var countriesToDisplay = [CountryViewData]()
     var isLoading = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.title = "Countries"
+        self.title = NSLocalizedString("Countries", comment: "")
         let countryCellNib = UINib(nibName: String(describing: CountryCell.self), bundle: nil)
         countriesTableView.register(countryCellNib, forCellReuseIdentifier: String(describing: CountryCell.self))
 
@@ -26,23 +26,27 @@ class CountriesListViewController: UIViewController, CountriesListViewProtocol {
         countriesTableView.refreshControl = refreshControl
     }
 
-    @objc private func refreshData() {
-        presenter.getOneCountry(numberOfCountries: countriesToDisplay.count)
+    @objc
+    private func refreshData() {
+        presenter.getLatestCountries()
         refreshControl.endRefreshing()
     }
 
-    func setCountries(_ countries: [CountryViewData]) {
+    func setMoreCountries(_ countries: [CountryViewData]) {
         countriesTableView.tableFooterView = nil
-        countriesToDisplay = countries
+        countriesToDisplay += countries
         countriesTableView.reloadData()
-        isLoading = false
+        self.isLoading = false
     }
 
-    func setOneCountry(_ country: CountryViewData) {
-        countriesToDisplay.insert(country, at: 0)
+    func setLatestCountries(_ countries: [CountryViewData]) {
+        countriesToDisplay = countries
         countriesTableView.reloadData()
+        self.isLoading = false
     }
 }
+
+// MARK: - UITableViewDataSource
 
 extension CountriesListViewController: UITableViewDataSource {
 
@@ -51,13 +55,30 @@ extension CountriesListViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: CountryCell.self), for: indexPath) as? CountryCell
+        let cell = tableView.dequeueReusableCell(
+            withIdentifier: String(describing: CountryCell.self),
+            for: indexPath
+        ) as? CountryCell
         let countryViewData = countriesToDisplay[indexPath.row]
         cell?.setup(country: countryViewData)
         return cell ?? UITableViewCell()
 
     }
+}
 
+// MARK: - UITableViewDelegate
+
+extension CountriesListViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let country = countriesToDisplay[indexPath.row]
+        presenter.tapOnCountry(country: country)
+        tableView.deselectRow(at: indexPath, animated: false)
+    }
+}
+
+// MARK: - FooterExtentsion
+
+extension CountriesListViewController {
     private func createSpinerFooter() -> UIView {
         let footerView = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.size.width, height: 100))
 
@@ -72,22 +93,14 @@ extension CountriesListViewController: UITableViewDataSource {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let offsetY = scrollView.contentOffset.y
 
-        if offsetY > (countriesTableView.contentSize.height - scrollView.frame.size.height) {
-            if isLoading {
-                countriesTableView.tableFooterView = createSpinerFooter()
-            } else {
-                countriesTableView.tableFooterView = nil
-            }
-
-            presenter.getCountries()
+        guard offsetY > (countriesTableView.contentSize.height - scrollView.frame.size.height) else {
+            return
         }
-    }
-
-}
-
-extension CountriesListViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let country = countriesToDisplay[indexPath.row]
-        presenter.tapOnCountry(country: country)
+        if isLoading {
+            countriesTableView.tableFooterView = createSpinerFooter()
+        } else {
+            countriesTableView.tableFooterView = nil
+        }
+        presenter.getMoreCountries()
     }
 }

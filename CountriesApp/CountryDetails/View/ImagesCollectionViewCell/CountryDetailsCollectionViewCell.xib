@@ -16,7 +16,7 @@
                 <rect key="frame" x="0.0" y="0.0" width="354" height="165"/>
                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 <subviews>
-                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="YkM-cg-wIf" customClass="WebImageView" customModule="CountriesApp" customModuleProvider="target">
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="YkM-cg-wIf">
                         <rect key="frame" x="0.0" y="0.0" width="354" height="165"/>
                     </imageView>
                 </subviews>

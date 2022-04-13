@@ -2,13 +2,13 @@
 //  ImageManager.swift
 //  CountriesApp
 //
-//  Created by Дмитрий Бабаев on 06.04.2022.
+//  Created by Dmitry Babaev on 06.04.2022.
 //
 
 import Foundation
 
 protocol ImageManagerProtocol {
-    func getImage(from url: URL, completion: @escaping (Data, URLResponse) -> Void)
+    func getImage(from url: URL, completion: @escaping (Result<Data, Error>) -> Void)
 }
 
 class ImageManager: ImageManagerProtocol {
@@ -17,14 +17,15 @@ class ImageManager: ImageManagerProtocol {
 
     private init() {}
 
-    func getImage(from url: URL, completion: @escaping (Data, URLResponse) -> Void) {
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            guard let data = data, let response = response else {
-                print(error?.localizedDescription ?? "Unknown error")
-                return
+    func getImage(from url: URL, completion: @escaping (Result<Data, Error>) -> Void) {
+        URLSession.shared.dataTask(with: url) { data, _, error in
+            if let error = error {
+                completion(.failure(error))
+            } else {
+                completion(.success(data ?? Data()))
             }
-            completion(data, response)
-        }.resume()
+        }
+        .resume()
     }
 
 }
