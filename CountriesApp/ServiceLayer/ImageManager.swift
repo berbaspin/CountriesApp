@@ -8,7 +8,7 @@
 import Foundation
 
 protocol ImageManagerProtocol {
-    func getImage(from url: URL, completion: @escaping (Result<Data, Error>) -> Void)
+    func getImage(from url: URL, completion: @escaping (Data, URLResponse) -> Void)
 }
 
 class ImageManager: ImageManagerProtocol {
@@ -17,13 +17,13 @@ class ImageManager: ImageManagerProtocol {
 
     private init() {}
 
-    func getImage(from url: URL, completion: @escaping (Result<Data, Error>) -> Void) {
-        URLSession.shared.dataTask(with: url) { data, _, error in
-            if let error = error {
-                completion(.failure(error))
-            } else {
-                completion(.success(data ?? Data()))
+    func getImage(from url: URL, completion: @escaping (Data, URLResponse) -> Void) {
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            guard let data = data, let response = response else {
+                print(error?.localizedDescription ?? "Unknown error")
+                return
             }
+            completion(data, response)
         }
         .resume()
     }

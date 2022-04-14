@@ -58,10 +58,6 @@
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="ytL-He-vXR">
-                        <rect key="frame" x="33.5" y="25" width="20" height="20"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    </activityIndicatorView>
                 </subviews>
                 <constraints>
                     <constraint firstItem="Kk0-fE-CCT" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="10" id="GYf-ja-18c"/>
@@ -78,7 +74,6 @@
                 <outlet property="capitalLabel" destination="hbs-fP-ydX" id="kTO-J9-3Eg"/>
                 <outlet property="countryImage" destination="Abm-3X-RPr" id="cRr-35-S98"/>
                 <outlet property="descriptionLabel" destination="2ed-ev-aWo" id="I7e-12-MxV"/>
-                <outlet property="imageActivityIndicator" destination="ytL-He-vXR" id="xVa-wK-H4r"/>
                 <outlet property="nameLabel" destination="xAP-EW-lmd" id="eSr-ST-CcL"/>
             </connections>
             <point key="canvasLocation" x="155.07246376811597" y="140.95982142857142"/>
