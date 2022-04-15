@@ -41,6 +41,7 @@
 /* Begin PBXFileReference section */
 		131A709B28096AE500C8EFD4 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		131A709D28096B0100C8EFD4 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
+		131A709E28099E0900C8EFD4 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		137A9C6E27FB749600282214 /* CountriesApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CountriesApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		137A9C7127FB749600282214 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		137A9C7327FB749600282214 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -87,6 +88,7 @@
 		137A9C6527FB749500282214 = {
 			isa = PBXGroup;
 			children = (
+				131A709E28099E0900C8EFD4 /* README.md */,
 				137A9C7027FB749600282214 /* CountriesApp */,
 				137A9C6F27FB749600282214 /* Products */,
 			);
