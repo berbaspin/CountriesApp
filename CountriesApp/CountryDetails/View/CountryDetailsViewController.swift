@@ -21,15 +21,23 @@ class CountryDetailsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         presenter.setCountry()
+        setupImagesCollectionView()
+        setupTableView()
+        nameLabel.text = countryToDisplay?.name
+        descriptionLabel.text = countryToDisplay?.description
+    }
+
+    private func setupImagesCollectionView() {
         let imageCell = UINib(nibName: String(describing: CountryDetailsCollectionViewCell.self), bundle: nil)
         imagesCollectionView.register(
             imageCell, forCellWithReuseIdentifier: String(describing: CountryDetailsCollectionViewCell.self)
         )
+        setupImagesPageControl()
+    }
+
+    private func setupTableView() {
         let informationCell = UINib(nibName: String(describing: InformationCell.self), bundle: nil)
         informationTableView.register(informationCell, forCellReuseIdentifier: String(describing: InformationCell.self))
-        setupImagesPageControl()
-        nameLabel.text = countryToDisplay?.name
-        descriptionLabel.text = countryToDisplay?.description
     }
 
     private func setupImagesPageControl() {
@@ -45,13 +53,17 @@ class CountryDetailsViewController: UIViewController {
 
 }
 
+// MARK: - CountryDetailViewProtocol
+
 extension CountryDetailsViewController: CountryDetailViewProtocol {
     func setCountry(country: CountryViewData) {
         countryToDisplay = country
     }
 }
 
-extension CountryDetailsViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+// MARK: UICollectionViewDataSource
+
+extension CountryDetailsViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         countryToDisplay?.images.count ?? 0
     }
@@ -78,11 +90,12 @@ extension CountryDetailsViewController: UICollectionViewDataSource, UICollection
         CGSize(width: imagesCollectionView.frame.width, height: imagesCollectionView.frame.height)
 
     }
+}
 
+extension CountryDetailsViewController: UICollectionViewDelegateFlowLayout {
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         imagesPageControl.currentPage = Int(scrollView.contentOffset.x) / Int(scrollView.frame.width)
     }
-
 }
 
 // MARK: - UITableViewDataSource

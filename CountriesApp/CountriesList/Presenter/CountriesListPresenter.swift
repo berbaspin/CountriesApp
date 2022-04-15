@@ -8,9 +8,8 @@
 import Foundation
 
 protocol CountriesListViewProtocol: AnyObject {
-    func setMoreCountries(_ countries: [CountryViewData])
+    func setMoreCountries(_ countries: [CountryViewData], showPagination: Bool)
     func setLatestCountries(_ countries: [CountryViewData])
-    var isLoading: Bool { get set }
 }
 
 protocol CountriesListPresenterProtocol: AnyObject {
@@ -26,6 +25,7 @@ class CountriesListPresenter: CountriesListPresenterProtocol {
     private var router: RouterProtocol?
     private var countries = [CountryViewData]()
     private var urlString: String = API.countries
+    private var isLoading = true
 
     private var numberFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
@@ -43,12 +43,7 @@ class CountriesListPresenter: CountriesListPresenterProtocol {
     }
 
     func getMoreCountries() {
-        guard let view = view, !view.isLoading else {
-            return
-        }
         if !urlString.isEmpty {
-            view.isLoading = true
-
             getCountries(from: urlString) { [weak self] countries, urlString in
                 guard let self = self else {
                     return
@@ -64,9 +59,6 @@ class CountriesListPresenter: CountriesListPresenterProtocol {
                 self.setCountries(duration: durationSeconds)
             }
         } else {
-            if !self.countries.isEmpty {
-                view.isLoading = true
-            }
             setCountries(duration: 2.0)
         }
     }
@@ -76,22 +68,20 @@ class CountriesListPresenter: CountriesListPresenterProtocol {
         if countries.count > 3 {
             elements = Array(countries.prefix(4))
             countries = Array(countries[4 ..< countries.count])
+            isLoading = true
         } else {
             elements = Array(countries.prefix(countries.count))
             countries = []
+            isLoading = false
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
             if !elements.isEmpty {
-                self.view?.setMoreCountries(elements)
+                self.view?.setMoreCountries(elements, showPagination: self.isLoading)
             }
         }
     }
 
     func getLatestCountries() {
-        guard let view = view, !view.isLoading else {
-            return
-        }
-        view.isLoading = true
         getCountries(from: API.countries) { [weak self] countries, urlString in
             guard let self = self else {
                 return
