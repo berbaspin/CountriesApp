@@ -9,7 +9,7 @@ import Foundation
 
 protocol CountriesListViewProtocol: AnyObject {
     func setMoreCountries(_ countries: [CountryViewData], showPagination: Bool)
-    func setLatestCountries(_ countries: [CountryViewData])
+    func setLatestCountries(_ countries: [CountryViewData], showPagination: Bool)
 }
 
 protocol CountriesListPresenterProtocol: AnyObject {
@@ -93,7 +93,7 @@ class CountriesListPresenter: CountriesListPresenterProtocol {
             let elements = Array(countries.prefix(4))
             self.countries = Array(countries[4 ..< countries.count])
             DispatchQueue.main.async {
-                self.view?.setLatestCountries(elements)
+                self.view?.setLatestCountries(elements, showPagination: true)
             }
         }
     }

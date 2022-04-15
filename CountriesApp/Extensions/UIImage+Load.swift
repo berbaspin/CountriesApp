@@ -14,7 +14,8 @@ extension UIImage {
             return
         }
 
-        if let cachedImage = CacheManager.shared.getData(for: imageUrl) {
+        if let cachedImageData = CacheManager.shared.getData(for: imageUrl),
+        let cachedImage = UIImage(data: cachedImageData) {
             completion(cachedImage)
         }
 

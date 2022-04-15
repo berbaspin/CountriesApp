@@ -14,6 +14,7 @@ class CountriesListViewController: UIViewController, CountriesListViewProtocol {
     // swiftlint:disable:next implicitly_unwrapped_optional
     var presenter: CountriesListPresenterProtocol!
     private var countriesToDisplay = [CountryViewData]()
+    private var showSpinner = true
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,7 +24,6 @@ class CountriesListViewController: UIViewController, CountriesListViewProtocol {
 
         refreshControl.addTarget(self, action: #selector(refreshData), for: .valueChanged)
         countriesTableView.refreshControl = refreshControl
-        countriesTableView.tableFooterView = createSpinerFooter()
     }
 
     @objc
@@ -33,15 +33,13 @@ class CountriesListViewController: UIViewController, CountriesListViewProtocol {
     }
 
     func setMoreCountries(_ countries: [CountryViewData], showPagination: Bool) {
-        if !showPagination {
-            countriesTableView.tableFooterView = nil
-        }
+        showSpinner = showPagination
         countriesToDisplay += countries
         countriesTableView.reloadData()
-
     }
 
-    func setLatestCountries(_ countries: [CountryViewData]) {
+    func setLatestCountries(_ countries: [CountryViewData], showPagination: Bool) {
+        showSpinner = showPagination
         countriesToDisplay = countries
         countriesTableView.reloadData()
     }
@@ -86,22 +84,16 @@ extension CountriesListViewController: UITableViewDelegate {
         presenter.tapOnCountry(country: country)
         tableView.deselectRow(at: indexPath, animated: false)
     }
-}
 
-// MARK: - Pagination
-
-extension CountriesListViewController {
-
-    func scrollViewWillEndDragging(
-        _ scrollView: UIScrollView,
-        withVelocity velocity: CGPoint,
-        targetContentOffset: UnsafeMutablePointer<CGPoint>
-    ) {
-        let offsetY = scrollView.contentOffset.y
-
-        guard offsetY > (countriesTableView.contentSize.height - scrollView.frame.size.height) else {
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        guard indexPath.row == countriesToDisplay.count - 1 else {
             return
         }
-        presenter.getMoreCountries()
+        if showSpinner {
+            tableView.tableFooterView = createSpinerFooter()
+            presenter.getMoreCountries()
+        } else {
+            tableView.tableFooterView = nil
+        }
     }
 }

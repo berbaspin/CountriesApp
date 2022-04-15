@@ -9,7 +9,7 @@ import UIKit
 
 protocol CacheManagerProtocol {
     func saveData(with data: Data, response: URLResponse)
-    func getData(for url: URL) -> UIImage?
+    func getData(for url: URL) -> Data?
 }
 
 class CacheManager: CacheManagerProtocol {
@@ -27,11 +27,11 @@ class CacheManager: CacheManagerProtocol {
         URLCache.shared.storeCachedResponse(cachedResponse, for: request)
     }
 
-    func getData(for url: URL) -> UIImage? {
+    func getData(for url: URL) -> Data? {
         let request = URLRequest(url: url)
 
         if let cachedResponse = URLCache.shared.cachedResponse(for: request) {
-            return UIImage(data: cachedResponse.data)
+            return cachedResponse.data
         }
         return nil
     }
