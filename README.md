@@ -1,46 +1,44 @@
 #  CountriesApp
 
-## Требования ##
+## Requirements ##
 
 
-### Сделать iOS приложение ###
-Приложение представляет из себя список стран и их детальное описание.
-Данные подгружаются постранично и находятся в JSON файлах pageN.json,  где N-номер страницы.
-Начать нужно с 
-[ page1.json ]( https://rawgit.com/NikitaAsabin/799e4502c9fc3e0ea7af439b2dfd88fa/raw/7f5c6c66358501f72fada21e04d75f64474a7888/page1.json ) . URL к следующей странице хранится в JSON файле в параметре "next".  
+### Build an iOS app ###
+The application is a list of countries and their detailed description.
+The data is loaded page by page and located in JSON files pageN.json, where N is a page number.
+Start with
+[ page1.json ]( https://rawgit.com/NikitaAsabin/799e4502c9fc3e0ea7af439b2dfd88fa/raw/7f5c6c66358501f72fada21e04d75f64474a7888/page1.json ) . The URL to the next page is located in the JSON file in the "next" parameter. 
 
-Детальный дизайн с ассетами находится в скетч файле тут [Тестовое задание для iOS](https://drive.google.com/file/d/1DwzFVFKsgTbrduPskJuDuWkQ_kggk9jO/view?usp=sharing)
+The detailed design with assets is in the sketch [file](https://drive.google.com/file/d/1DwzFVFKsgTbrduPskJuDuWkQ_kggk9jO/view?usp=sharing)
 
-Список подгруженных стран должен сохранятся локально.  В случае отсутствия интернета отображать закешированые данные.
+The list of loaded countries should be saved locally. In the absence of an Internet connection, cached data should be display.
 
-#### Экраны: ####
+#### Screens: ####
 
-**Список стран**
+**List of countries**
 
- * Необходимо отобразить список стран
- * Экран должен соответствовать прикрепленному [ дизайну ]( https://invis.io/BKDKMH76Q#/254298088_Countries_List )
- * Реализовать автоматическую подгрузку стран (пагинация)
- * Предусмотреть динамический размер ячеек
- * Добавить возможность обновления списка ( pull to refresh )
+ * The screen must match the attached [ design ]( https://invis.io/BKDKMH76Q#/254298088_Countries_List )
+ * Automatic loading of countries (pagination)
+ * Dynamic cell size
+ * Ability to update the list of countries (pull to refresh)
  
-**Детальная информации о стране**
+**Detailed information about the country**
 
- * Необходимо отобразить детальную информацию о стране
- * Экран должен соответствовать прикрепленному [ дизайну ]( https://invis.io/BKDKMH76Q#/254298087_Country_Page ). Дополнительно можно сделать в соотвествии с данным [дизайном](https://invis.io/BKDKMH76Q#/254309438_Country_Page_2)
- * В случае если фото отсутствует - отобразить флаг выбранной страны
+ * The screen must match the attached [ design ]( https://invis.io/BKDKMH76Q#/254298087_Country_Page ). 
+ * If there is no photo - display the flag of the selected country
 
-> *Фото в JSON файле находится в image или в countryInfo:{images: [] }*
+> *Photos in the JSON file are located by the key image or in countryInfo:{images: [] }*
 
 
 ## Workflow ##
 
 * Use Swift
-* Your choice for architecture (MVC, MVP, MVVM, Viper)
+* Your choice of architecture (MVC, MVP, MVVM, Viper)
 * Storyboard or XIBs
 * Networking
 * Store local data
 * Follow Gitflow
-* **Do not** use third party frameworks for image loading
 * Store local data with Realm or Core Data
 * Unit tests
 * UI tests
+* **Do not** use third party frameworks for image loading
