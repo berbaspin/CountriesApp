@@ -120,7 +120,10 @@ class CountriesListPresenter: CountriesListPresenterProtocol {
         let group = DispatchGroup()
         group.enter()
 
-        DispatchQueue.main.async {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else {
+                return
+            }
             self.networkDataFetcher.getCountries(from: urlString) { countries, urlString in
                 if let urlString = urlString {
                     self.urlString = urlString
@@ -133,7 +136,10 @@ class CountriesListPresenter: CountriesListPresenterProtocol {
             }
         }
 
-        group.notify(queue: .main) {
+        group.notify(queue: .main) { [weak self] in
+            guard let self = self else {
+                return
+            }
             let countries = self.coreDataManager.getCountries()
             let mappedCountries = countries.map {
                 CountryViewData(
