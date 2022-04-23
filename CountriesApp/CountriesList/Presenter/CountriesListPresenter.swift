@@ -21,11 +21,14 @@ protocol CountriesListPresenterProtocol: AnyObject {
 class CountriesListPresenter: CountriesListPresenterProtocol {
     weak var view: CountriesListViewProtocol?
     // swiftlint:disable:next implicitly_unwrapped_optional
-    let dataFetcher: DataFetcherProtocol!
+    let networkDataFetcher: NetworkDataFetcherProtocol!
+    // swiftlint:disable:next implicitly_unwrapped_optional
+    let coreDataManager: CoreDataManagerProtocol!
     private var router: RouterProtocol?
     private var countries = [CountryViewData]()
     private var urlString: String = API.countries
     private var isLoading = true
+    private var newCountries = [CountryViewData]()
 
     private var numberFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
@@ -35,9 +38,15 @@ class CountriesListPresenter: CountriesListPresenterProtocol {
         return formatter
     }()
 
-    init(view: CountriesListViewProtocol, dataFetcher: DataFetcherProtocol, router: RouterProtocol) {
+    init(
+        view: CountriesListViewProtocol,
+        networkDataFetcher: NetworkDataFetcherProtocol,
+        coreDataManager: CoreDataManagerProtocol,
+        router: RouterProtocol
+    ) {
         self.view = view
-        self.dataFetcher = dataFetcher
+        self.networkDataFetcher = networkDataFetcher
+        self.coreDataManager = coreDataManager
         self.router = router
         getLatestCountries()
     }
@@ -56,6 +65,7 @@ class CountriesListPresenter: CountriesListPresenterProtocol {
                     self.urlString = urlString
                 }
                 self.countries += countries
+
                 self.setCountries(duration: durationSeconds)
             }
         } else {
@@ -65,7 +75,7 @@ class CountriesListPresenter: CountriesListPresenterProtocol {
 // duration is a delay for displaying pagination
     private func setCountries(duration: Double) {
         var elements = [CountryViewData]()
-        if countries.count > 3 {
+        if countries.count > 4 {
             elements = Array(countries.prefix(4))
             countries = Array(countries[4 ..< countries.count])
             isLoading = true
@@ -86,36 +96,69 @@ class CountriesListPresenter: CountriesListPresenterProtocol {
             guard let self = self else {
                 return
             }
+
             if let urlString = urlString {
                 self.urlString = urlString
             }
 
             let elements = Array(countries.prefix(4))
-            self.countries = Array(countries[4 ..< countries.count])
+            if countries.count > 4 {
+                self.countries = Array(countries[4 ..< countries.count])
+            }
+
             DispatchQueue.main.async {
                 self.view?.setLatestCountries(elements, showPagination: true)
             }
         }
     }
 
-    private func getCountries(from urlString: String, completion: @escaping ([CountryViewData], String?) -> Void) {
-        dataFetcher.getCountries(from: urlString) { [weak self] countries, urlString in
-            guard let self = self else {
-                return
+    private func getCountries(from urlString: String?, completion: @escaping ([CountryViewData], String?) -> Void) {
+        guard let urlString = urlString else {
+            return
+        }
+
+        let group = DispatchGroup()
+        group.enter()
+
+        DispatchQueue.main.async {
+            self.networkDataFetcher.getCountries(from: urlString) { countries, urlString in
+                if let urlString = urlString {
+                    self.urlString = urlString
+                }
+
+                for country in countries {
+                    self.coreDataManager.saveCountry(country: country)
+                }
+                group.leave()
             }
+        }
+
+        group.notify(queue: .main) {
+            let countries = self.coreDataManager.getCountries()
             let mappedCountries = countries.map {
                 CountryViewData(
-                    name: $0.name,
-                    capital: $0.capital,
+                    name: $0.name ?? "",
+                    capital: $0.capital ?? "",
                     population: self.numberFormatter.string(from: $0.population as NSNumber) ?? "0",
-                    continent: $0.continent,
-                    description: $0.description,
-                    shortDescription: $0.descriptionSmall ?? "",
-                    flag: $0.countryInfo.flag,
-                    images: $0.countryInfo.images.isEmpty ? [$0.countryInfo.flag] : $0.countryInfo.images
+                    continent: $0.continent ?? "",
+                    description: $0.longDescription ?? "",
+                    shortDescription: $0.smallDescription ?? "",
+                    flag: $0.flag ?? "",
+                    images:
+                        !($0.images?.allObjects as? [CountryImages] ?? []).isEmpty
+                    ? ($0.images?.allObjects as? [CountryImages] ?? []).map { $0.imageUrl ?? "" }
+                    : [$0.flag ?? ""]
                 )
             }
-            completion(mappedCountries, urlString)
+
+            for mappedCountry in mappedCountries {
+                if !self.newCountries.contains(mappedCountry) {
+                    self.newCountries.append(mappedCountry)
+                } else {
+                    self.newCountries = self.newCountries.filter { $0 != mappedCountry }
+                }
+            }
+            completion(self.newCountries, self.urlString)
         }
     }
 

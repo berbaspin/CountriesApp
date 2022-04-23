@@ -7,11 +7,11 @@
 
 import Foundation
 
-protocol DataFetcherProtocol {
+protocol NetworkDataFetcherProtocol {
     func getCountries(from urlString: String, response: @escaping ([Country], String?) -> Void)
 }
 
-class NetworkDataFetcher: DataFetcherProtocol {
+class NetworkDataFetcher: NetworkDataFetcherProtocol {
 
     private let networkService: NetworkServiceProtocol
     private let decoder = JSONDecoder()

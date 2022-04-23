@@ -16,8 +16,14 @@ class AssenlyBuilder: AssemblyBuilderProtocol {
     func createCoutriesListModule(router: RouterProtocol) -> UIViewController {
         let viewVC = CountriesListViewController()
         let networkService = NetworkService()
-        let dataFetcher = NetworkDataFetcher(networkService: networkService)
-        let presenter = CountriesListPresenter(view: viewVC, dataFetcher: dataFetcher, router: router)
+        let networkDataFetcher = NetworkDataFetcher(networkService: networkService)
+        let coreDataManager = CoreDataManager()
+        let presenter = CountriesListPresenter(
+            view: viewVC,
+            networkDataFetcher: networkDataFetcher,
+            coreDataManager: coreDataManager,
+            router: router
+        )
         viewVC.presenter = presenter
         return viewVC
     }

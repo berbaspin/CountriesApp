@@ -14,7 +14,7 @@ class CountriesListViewController: UIViewController, CountriesListViewProtocol {
     // swiftlint:disable:next implicitly_unwrapped_optional
     var presenter: CountriesListPresenterProtocol!
     private var countriesToDisplay = [CountryViewData]()
-    private var showSpinner = true
+    private var showSpinner = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -86,7 +86,7 @@ extension CountriesListViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        guard indexPath.row == countriesToDisplay.count - 1 else {
+        guard indexPath.row == countriesToDisplay.count - 1  else {
             return
         }
         if showSpinner {

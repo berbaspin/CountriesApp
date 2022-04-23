@@ -1,4 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1" systemVersion="11A491" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="false" userDefinedModelVersionIdentifier="">
-    <elements/>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="20086" systemVersion="21D62" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="CountryData" representedClassName="CountryData" syncable="YES">
+        <attribute name="capital" attributeType="String"/>
+        <attribute name="continent" attributeType="String"/>
+        <attribute name="flag" attributeType="String"/>
+        <attribute name="longDescription" attributeType="String"/>
+        <attribute name="name" attributeType="String"/>
+        <attribute name="population" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="smallDescription" attributeType="String"/>
+        <relationship name="images" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CountryImages" inverseName="country" inverseEntity="CountryImages"/>
+    </entity>
+    <entity name="CountryImages" representedClassName="CountryImages" syncable="YES">
+        <attribute name="imageUrl" optional="YES" attributeType="String"/>
+        <relationship name="country" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CountryData" inverseName="images" inverseEntity="CountryData"/>
+    </entity>
+    <elements>
+        <element name="CountryData" positionX="-45" positionY="0" width="128" height="149"/>
+        <element name="CountryImages" positionX="-18" positionY="81" width="128" height="59"/>
+    </elements>
 </model>
