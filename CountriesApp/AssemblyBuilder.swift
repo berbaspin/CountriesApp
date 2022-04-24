@@ -28,8 +28,9 @@ class AssenlyBuilder: AssemblyBuilderProtocol {
         return viewVC
     }
 
+    // убрать опшнл
     func createCountryDetailsModule(country: CountryViewData?, router: RouterProtocol) -> UIViewController {
-        let viewVC = CountryDetailsViewController()
+        let viewVC = CountryDetailsViewController() // viewVC - vc, viewController, countryDetailsViewController, countryDetailsVC
         let presenter = CountryDetailsPresenter(view: viewVC, router: router, country: country)
         viewVC.presenter = presenter
         return viewVC

@@ -9,7 +9,7 @@ import Foundation
 
 struct CountryViewData {
 
-    var name: String
+    let name: String
     var capital: String
     var population: String
     var continent: String
@@ -20,8 +20,6 @@ struct CountryViewData {
 
 }
 
+// MARk
 extension CountryViewData: Equatable {
-    static func == (lhs: CountryViewData, rhs: CountryViewData) -> Bool {
-        lhs.name == rhs.name
-    }
 }

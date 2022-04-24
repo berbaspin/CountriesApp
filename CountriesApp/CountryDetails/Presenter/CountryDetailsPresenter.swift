@@ -17,8 +17,8 @@ protocol CountryDetailsPresenterProtocol: AnyObject {
 
 class CountryDetailsPresenter: CountryDetailsPresenterProtocol {
 
-    weak var view: CountryDetailViewProtocol?
-    var router: RouterProtocol?
+    private weak var view: CountryDetailViewProtocol?
+    var router: RouterProtocol? // зачем?
     var country: CountryViewData?
 
     init(view: CountryDetailViewProtocol, router: RouterProtocol, country: CountryViewData?) {
@@ -35,3 +35,9 @@ class CountryDetailsPresenter: CountryDetailsPresenterProtocol {
     }
 
 }
+
+// 1. Private, lel, optional, final, любые слова, которые могут быть не написаны, не пишем
+// 2. guard
+// 3. Лишние переменные, лишние функции, лишние строки - пытаемся убирать
+// 4. Если тебя что-то смущает, то ты сначала думаешь как это решить, спрашиваешь, а потом кидаешь на ревью
+

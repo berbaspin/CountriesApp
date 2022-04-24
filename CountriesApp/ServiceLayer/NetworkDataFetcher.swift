@@ -7,24 +7,30 @@
 
 import Foundation
 
-protocol NetworkDataFetcherProtocol {
-    func getCountries(from urlString: String, response: @escaping ([Country], String?) -> Void)
+struct Page<T> {
+    let entities: [T]
+    let nextPage: URL
 }
 
-class NetworkDataFetcher: NetworkDataFetcherProtocol {
+protocol NetworkDataFetcherProtocol {
+    func getCountries(from urlString: String, response: @escaping ([Country], String?) -> Void) // улучшить апи
+}
+
+final class NetworkDataFetcher: NetworkDataFetcherProtocol {
 
     private let networkService: NetworkServiceProtocol
     private let decoder = JSONDecoder()
 
     init(networkService: NetworkServiceProtocol) {
         self.networkService = networkService
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
     }
 
     func getCountries(from urlString: String, response: @escaping ([Country], String?) -> Void) {
         networkService.request(from: urlString) { [weak self] result in
             switch result {
             case .success(let data):
-                let decoded = self?.decodeJSON(type: CountriesWrapped.self, from: data)
+                let decoded = try? self?.decoder.decode(CountriesWrapped.self, from: data)
                 response(decoded?.countries ?? [], decoded?.next)
             case .failure(let error):
                 print("Error received requesting: \(error.localizedDescription)")
@@ -32,16 +38,11 @@ class NetworkDataFetcher: NetworkDataFetcherProtocol {
         }
     }
 
-    private func decodeJSON<T: Decodable>(type: T.Type, from data: Data?) -> T? {
-        decoder.keyDecodingStrategy = .convertFromSnakeCase
-        guard let data = data else {
-            return nil
-        }
-
+    private func decodeJSON<T: Decodable>(type: T.Type, from data: Data) -> T? { // метод не нужен
         do {
             let decodedData = try decoder.decode(type.self, from: data)
             return decodedData
-        } catch let error as NSError {
+        } catch { // не нужно NSError
             print("Failed \(error.localizedDescription)")
             return nil
         }

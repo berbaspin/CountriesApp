@@ -13,7 +13,7 @@ protocol CoreDataManagerProtocol {
     func getCountries() -> [CountryData]
 }
 
-class CoreDataManager: CoreDataManagerProtocol {
+final class CoreDataManager: CoreDataManagerProtocol {
     // MARK: - Core Data stack
 
     private var viewContext: NSManagedObjectContext {
@@ -23,9 +23,10 @@ class CoreDataManager: CoreDataManagerProtocol {
     lazy var persistentContainer: NSPersistentContainer = {
         let container = NSPersistentContainer(name: "CountriesApp")
         container.loadPersistentStores { _, error in
-            if let error = error as NSError? {
-                fatalError("Unresolved error \(error), \(error.userInfo)")
-            }
+          guard let error = error as NSError? else {
+            return
+          }
+          fatalError("Unresolved error \(error), \(error.userInfo)")
         }
         return container
     }()
@@ -34,13 +35,12 @@ class CoreDataManager: CoreDataManagerProtocol {
 
     private func saveContext () {
         let context = persistentContainer.viewContext
-        if context.hasChanges {
-            do {
-                try context.save()
-            } catch {
-                let nserror = error as NSError
-                fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
-            }
+        guard context.hasChanges else { return }
+        do {
+            try context.save()
+        } catch {
+            let nserror = error as NSError
+            fatalError("Unresolved error \(nserror), \(nserror.userInfo)") // ронять приложение плохо
         }
     }
 
@@ -50,6 +50,7 @@ class CoreDataManager: CoreDataManagerProtocol {
         }
 
         let newCountry = CountryData(context: viewContext)
+        
         newCountry.name = country.name
         newCountry.continent = country.continent
         newCountry.capital = country.capital
@@ -66,8 +67,9 @@ class CoreDataManager: CoreDataManagerProtocol {
 
     private func saveImages(country: CountryData, images: [String]) -> [CountryImages] {
         var addedImages = [CountryImages]()
-        for image in images {
+        for image in images { // map был бы лучше
             let newImage = CountryImages(context: viewContext)
+            // move to constructor
             newImage.country = country
             newImage.imageUrl = image
             addedImages.append(newImage)
@@ -92,7 +94,7 @@ class CoreDataManager: CoreDataManagerProtocol {
 
         do {
             let result = try viewContext.fetch(fetchRequest)
-            return result.isEmpty ? false : true
+            return !result.isEmpty
         } catch let error as NSError {
             print(error.localizedDescription)
             return false

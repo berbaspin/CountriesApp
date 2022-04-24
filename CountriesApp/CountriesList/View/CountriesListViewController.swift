@@ -14,7 +14,7 @@ class CountriesListViewController: UIViewController, CountriesListViewProtocol {
     // swiftlint:disable:next implicitly_unwrapped_optional
     var presenter: CountriesListPresenterProtocol!
     private var countriesToDisplay = [CountryViewData]()
-    private var showSpinner = false
+    private var showSpinner = false // isSpinnerShown
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,20 +31,20 @@ class CountriesListViewController: UIViewController, CountriesListViewProtocol {
         presenter.getLatestCountries()
         refreshControl.endRefreshing()
     }
-
-    func setMoreCountries(_ countries: [CountryViewData], showPagination: Bool) {
-        showSpinner = showPagination
-        countriesToDisplay += countries
-        countriesTableView.reloadData()
-    }
+//
+//    func setMoreCountries(_ countries: [CountryViewData], showPagination: Bool) {
+//        showSpinner = showPagination
+//        countriesToDisplay += countries // в презентер
+//        countriesTableView.reloadData()
+//    }
 
     func setLatestCountries(_ countries: [CountryViewData], showPagination: Bool) {
         showSpinner = showPagination
-        countriesToDisplay = countries
+        countriesToDisplay = countries // в презентер
         countriesTableView.reloadData()
     }
 
-    private func createSpinerFooter() -> UIView {
+    private func createSpinerFooter() -> UIView { // отдельный клас
         let footerView = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.size.width, height: 100))
 
         let spinner = UIActivityIndicatorView()
@@ -82,7 +82,7 @@ extension CountriesListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let country = countriesToDisplay[indexPath.row]
         presenter.tapOnCountry(country: country)
-        tableView.deselectRow(at: indexPath, animated: false)
+        tableView.deselectRow(at: indexPath, animated: false) // UITableViewController
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -90,7 +90,7 @@ extension CountriesListViewController: UITableViewDelegate {
             return
         }
         if showSpinner {
-            tableView.tableFooterView = createSpinerFooter()
+            tableView.tableFooterView = createSpinerFooter() // 
             presenter.getMoreCountries()
         } else {
             tableView.tableFooterView = nil

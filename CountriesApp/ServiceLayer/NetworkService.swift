@@ -11,7 +11,7 @@ protocol NetworkServiceProtocol {
     func request(from urlString: String, completion: @escaping (Result<Data, Error>) -> Void)
 }
 
-class NetworkService: NetworkServiceProtocol {
+final class NetworkService: NetworkServiceProtocol {
     func request(from urlString: String, completion: @escaping (Result<Data, Error>) -> Void) {
         guard let url = URL(string: urlString) else {
             return
@@ -26,13 +26,24 @@ class NetworkService: NetworkServiceProtocol {
         completion: @escaping (Result<Data, Error>) -> Void
     ) -> URLSessionDataTask {
         URLSession.shared.dataTask(with: request) { data, _, error  in
+            switch (data, error) {
+            case let (.some(data), nil):
+                completion(.success(data))
+            case let (_, .some(error)):
+                completion(.failure(error))
+            case (nil, nil):
+                fatalError()
+            }
 
             if let error = error {
                 completion(.failure(error))
                 return
+            } else if let data = data {
+                completion(.success(data))
             } else {
-                completion(.success(data ?? Data()))
+                print("invalid state")
             }
+
         }
     }
 }

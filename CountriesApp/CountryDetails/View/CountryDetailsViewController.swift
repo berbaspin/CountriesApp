@@ -16,18 +16,21 @@ class CountryDetailsViewController: UIViewController {
     @IBOutlet private var nameLabel: UILabel!
     // swiftlint:disable:next implicitly_unwrapped_optional
     var presenter: CountryDetailsPresenterProtocol!
-    private var countryToDisplay: CountryViewData?
-
+// private images:
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         presenter.setCountry()
         setupImagesCollectionView()
         setupTableView()
-        nameLabel.text = countryToDisplay?.name
-        descriptionLabel.text = countryToDisplay?.description
     }
+}
 
-    private func setupImagesCollectionView() {
+// MARK: - Setup methods
+
+private extension CountryDetailsViewController {
+
+    func setupImagesCollectionView() {
         let imageCell = UINib(nibName: String(describing: CountryDetailsCollectionViewCell.self), bundle: nil)
         imagesCollectionView.register(
             imageCell, forCellWithReuseIdentifier: String(describing: CountryDetailsCollectionViewCell.self)
@@ -35,29 +38,38 @@ class CountryDetailsViewController: UIViewController {
         setupImagesPageControl()
     }
 
-    private func setupTableView() {
+    func setupTableView() {
         let informationCell = UINib(nibName: String(describing: InformationCell.self), bundle: nil)
         informationTableView.register(informationCell, forCellReuseIdentifier: String(describing: InformationCell.self))
+        // вместо этого юзают такие расширения - https://github.com/AliSoftware/Reusable
     }
 
-    private func setupImagesPageControl() {
-        guard let countryToDisplay = countryToDisplay else {
+    func setupImagesPageControl() {
+        guard let countryToDisplay = countryToDisplay else { // в презентере public var numberOfPages: Int
             return
         }
-        if countryToDisplay.images.count > 1 {
+        if countryToDisplay.images.count > 1 { // это логика, она должна быть в presenter
             imagesPageControl.numberOfPages = countryToDisplay.images.count
         } else {
             imagesPageControl.isHidden = true
         }
     }
-
 }
 
 // MARK: - CountryDetailViewProtocol
 
 extension CountryDetailsViewController: CountryDetailViewProtocol {
     func setCountry(country: CountryViewData) {
-        countryToDisplay = country
+        nameLabel.text = country.name
+        descriptionLabel.text = country.description
+
+        // 1. Поставили страну в презентер
+        // 2. Презентер ставит страну во view
+        // 3. Страна сохраняет во вьюконтролер
+        // 4. ViewDidLoad() -> сетит какие то штуки
+
+        // 1. Пришла страна, поставили тексты и ячейки сразу
+
     }
 }
 
@@ -65,6 +77,7 @@ extension CountryDetailsViewController: CountryDetailViewProtocol {
 
 extension CountryDetailsViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        //presenter.cells.count
         countryToDisplay?.images.count ?? 0
     }
 
@@ -75,9 +88,7 @@ extension CountryDetailsViewController: UICollectionViewDataSource {
         let cell = collectionView.dequeueReusableCell(
             withReuseIdentifier: String(describing: CountryDetailsCollectionViewCell.self), for: indexPath
         ) as? CountryDetailsCollectionViewCell
-        if let country = countryToDisplay {
-            cell?.setup(imageString: country.images[indexPath.row])
-        }
+        cell?.setup(imageString: presenter.cells[indexPath.row])
         cell?.backgroundColor = .blue
         return cell ?? UICollectionViewCell()
     }

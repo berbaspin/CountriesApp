@@ -7,8 +7,10 @@
 
 import UIKit
 
-extension UIImage {
-    static func loadImageUsingCache(from urlString: String, completion: @escaping (UIImage) -> Void) {
+extension UIImageView {
+    // отменят предыдущий реквест
+    func loadUsingCache(from urlString: String, placeholder: UIImage? = UIImage(named: "imagePlaceholder")) {
+        self.image = UIImage(named: "imagePlaceholder")
 
         guard let imageUrl = URL(string: urlString) else {
             return
@@ -16,15 +18,14 @@ extension UIImage {
 
         if let cachedImageData = CacheManager.shared.getData(for: imageUrl),
         let cachedImage = UIImage(data: cachedImageData) {
-            completion(cachedImage)
+            image = cachedImage
         }
 
-        ImageManager.shared.getImage(from: imageUrl) { data, response in
+        ImageManager.shared.getImage(from: imageUrl) { [weak self] data, response in
             DispatchQueue.main.async {
-                if let downloadedImage = UIImage(data: data) {
-                    CacheManager.shared.saveData(with: data, response: response)
-                    completion(downloadedImage)
-                }
+                guard let downloadedImage = UIImage(data: data) else { return }
+                CacheManager.shared.saveData(with: data, response: response)
+                self?.image = downloadedImage
             }
         }
     }

@@ -17,7 +17,7 @@ class CountryCell: UITableViewCell {
     private var countryImageURL: String? {
         didSet {
             if let url = countryImageURL {
-                self.countryImage.image = UIImage(named: "imagePlaceholder")
+                self.countryImage.loadUsingCache(from: url)
                 UIImage.loadImageUsingCache(from: url) { image in
                     if url == self.countryImageURL {
                         self.countryImage.image = image

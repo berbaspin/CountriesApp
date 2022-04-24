@@ -30,9 +30,6 @@ class CacheManager: CacheManagerProtocol {
     func getData(for url: URL) -> Data? {
         let request = URLRequest(url: url)
 
-        if let cachedResponse = URLCache.shared.cachedResponse(for: request) {
-            return cachedResponse.data
-        }
-        return nil
+        return URLCache.shared.cachedResponse(for: request)?.data
     }
 }

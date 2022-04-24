@@ -7,12 +7,12 @@
 
 import Foundation
 
-protocol CountriesListViewProtocol: AnyObject {
+protocol CountriesListViewProtocol: AnyObject { // а зачем?
     func setMoreCountries(_ countries: [CountryViewData], showPagination: Bool)
     func setLatestCountries(_ countries: [CountryViewData], showPagination: Bool)
 }
 
-protocol CountriesListPresenterProtocol: AnyObject {
+protocol CountriesListPresenterProtocol { // а зачем
     func getMoreCountries()
     func getLatestCountries()
     func tapOnCountry(country: CountryViewData)
@@ -20,10 +20,8 @@ protocol CountriesListPresenterProtocol: AnyObject {
 
 class CountriesListPresenter: CountriesListPresenterProtocol {
     weak var view: CountriesListViewProtocol?
-    // swiftlint:disable:next implicitly_unwrapped_optional
-    let networkDataFetcher: NetworkDataFetcherProtocol!
-    // swiftlint:disable:next implicitly_unwrapped_optional
-    let coreDataManager: CoreDataManagerProtocol!
+    private let networkDataFetcher: NetworkDataFetcherProtocol
+    private let coreDataManager: CoreDataManagerProtocol
     private var router: RouterProtocol?
     private var countries = [CountryViewData]()
     private var urlString: String = API.countries
@@ -72,7 +70,8 @@ class CountriesListPresenter: CountriesListPresenterProtocol {
             setCountries(duration: 2.0)
         }
     }
-// duration is a delay for displaying pagination
+
+    // duration is a delay for displaying pagination // ниче непонятно
     private func setCountries(duration: Double) {
         var elements = [CountryViewData]()
         if countries.count > 4 {
@@ -85,7 +84,7 @@ class CountriesListPresenter: CountriesListPresenterProtocol {
             isLoading = false
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
-            if !elements.isEmpty {
+            if !elements.isEmpty { // guard
                 self.view?.setMoreCountries(elements, showPagination: self.isLoading)
             }
         }
@@ -102,7 +101,7 @@ class CountriesListPresenter: CountriesListPresenterProtocol {
             }
 
             let elements = Array(countries.prefix(4))
-            if countries.count > 4 {
+            if countries.count > 4 { // мне непонятно че такое 4
                 self.countries = Array(countries[4 ..< countries.count])
             }
 
@@ -117,13 +116,13 @@ class CountriesListPresenter: CountriesListPresenterProtocol {
             return
         }
 
-        let group = DispatchGroup()
+        let group = DispatchGroup() // не нужна
         group.enter()
 
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else {
-                return
-            }
+//        DispatchQueue.main.async { [weak self] in
+//            guard let self = self else {
+//                return
+//            }
             self.networkDataFetcher.getCountries(from: urlString) { countries, urlString in
                 if let urlString = urlString {
                     self.urlString = urlString
@@ -133,6 +132,7 @@ class CountriesListPresenter: CountriesListPresenterProtocol {
                     self.coreDataManager.saveCountry(country: country)
                 }
                 group.leave()
+                // handleCoreData()
             }
         }
 
@@ -153,7 +153,7 @@ class CountriesListPresenter: CountriesListPresenterProtocol {
                     images:
                         !($0.images?.allObjects as? [CountryImages] ?? []).isEmpty
                     ? ($0.images?.allObjects as? [CountryImages] ?? []).map { $0.imageUrl ?? "" }
-                    : [$0.flag ?? ""]
+                    : [$0.flag ?? ""] // оч плохо
                 )
             }
 
