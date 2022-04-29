@@ -69,7 +69,7 @@ extension CountryDetailsViewController: CountryDetailViewProtocol {
     }
 }
 
-// MARK: UICollectionViewDataSource
+// MARK: - UICollectionViewDataSource
 
 extension CountryDetailsViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -98,6 +98,7 @@ extension CountryDetailsViewController: UICollectionViewDataSource {
     }
 }
 
+// mark
 extension CountryDetailsViewController: UICollectionViewDelegateFlowLayout {
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         imagesPageControl.currentPage = Int(scrollView.contentOffset.x) / Int(scrollView.frame.width)
@@ -112,11 +113,11 @@ extension CountryDetailsViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let cell = tableView.dequeueReusableCell(
-        withIdentifier: String(describing: InformationCell.self), for: indexPath
-    ) as? InformationCell
+        let cell = tableView.dequeueReusableCell(
+            withIdentifier: String(describing: InformationCell.self), for: indexPath
+        ) as? InformationCell
         guard let countryToDisplay = countryToDisplay else {
-            return  UITableViewCell()
+            return UITableViewCell()
         }
         cell?.setup(index: indexPath.row, country: countryToDisplay)
 

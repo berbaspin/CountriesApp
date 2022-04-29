@@ -13,20 +13,11 @@ final class InformationCell: UITableViewCell {
     @IBOutlet private var fieldLabel: UILabel!
     @IBOutlet private var countryDetailLabel: UILabel!
 
-    func setup(index: Int, country: CountryViewData) {
-        let countryInformation = CountryInformation.allCases[index]
-
+  // ячейка должна быть тупой, она не решает что ей показать, она показывает то что дали на вход
+  func setup(with model: CountryInformation, text: String) {
         fieldImage.image = UIImage(systemName: countryInformation.icon)
         fieldLabel.text = countryInformation.rawValue.capitalized
-
-        switch countryInformation {
-        case .capital:
-            countryDetailLabel.text = country.capital
-        case .population:
-            countryDetailLabel.text = country.population
-        case .continent:
-            countryDetailLabel.text = country.continent
-        }
+        countryDetailLabel.text = text
     }
 
 }

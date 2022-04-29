@@ -17,11 +17,15 @@ protocol CountriesListPresenterProtocol {
     func tapOnCountry(country: CountryViewData)
 }
 
+private enum Constants {
+  static let какаяТоХуйня = 4
+}
+
 final class CountriesListPresenter: CountriesListPresenterProtocol {
     private weak var view: CountriesListViewProtocol?
     private let networkDataFetcher: NetworkDataFetcherProtocol
     private let coreDataManager: CoreDataManagerProtocol
-    private var router: RouterProtocol?
+    private let router: RouterProtocol
     private var countries = [CountryViewData]()
     private var url = URL(string: API.countries)
     private var isLoading = true
@@ -46,12 +50,12 @@ final class CountriesListPresenter: CountriesListPresenterProtocol {
         self.networkDataFetcher = networkDataFetcher
         self.coreDataManager = coreDataManager
         self.router = router
-        getLatestCountries()
+        getLatestCountries() // вызывать асинхронные запросы из конструктора плохо
     }
 
     func getMoreCountries() {
         guard let url = url else {
-            setCountries(duration: 2.0)
+            setCountries(duration: Constants.какаяТоХуйня)
             return
         }
 
@@ -61,7 +65,7 @@ final class CountriesListPresenter: CountriesListPresenterProtocol {
             }
             var durationSeconds = 0.0
             if self.url != URL(string: API.countries) {
-                durationSeconds = 2.0
+                durationSeconds = Constants.какаяТоХуйня
             }
             if let urlString = urlString {
                 self.url = urlString
@@ -75,13 +79,13 @@ final class CountriesListPresenter: CountriesListPresenterProtocol {
 // variable "numberOfCountriesToReturn" help to show 4 elements per request
 
     private func setCountries(duration: Double) {
-        if (countries.count - countriesToDisplay.count) > numberOfCountriesToReturn {
-            self.countriesToDisplay = Array(countries.prefix(self.countriesToDisplay.count + numberOfCountriesToReturn))
-            isLoading = true
+      let flag = countries.count - countriesToDisplay.count > numberOfCountriesToReturn
+        if flag {
+            countriesToDisplay = Array(countries.prefix(self.countriesToDisplay.count + numberOfCountriesToReturn))
         } else {
-            self.countriesToDisplay = countries
-            isLoading = false
+            countriesToDisplay = countries
         }
+      isLoading = flag
 
         DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
             self.view?.setCountries(self.countriesToDisplay, showPagination: self.isLoading)
@@ -113,7 +117,7 @@ final class CountriesListPresenter: CountriesListPresenterProtocol {
             return
         }
 
-        self.networkDataFetcher.getCountries(from: url) { [weak self] countries, url in
+       networkDataFetcher.getCountries(from: url) { [weak self] countries, url in
             guard let self = self else {
                 return
             }
@@ -121,9 +125,7 @@ final class CountriesListPresenter: CountriesListPresenterProtocol {
                 self.url = url
             }
 
-            for country in countries {
-                self.coreDataManager.saveCountry(country: country)
-            }
+         countries.forEach(self.coreDataManager.saveCountry) // разобраться почему это работает и как называется
 
             self.getLocalData()
             completion(self.countries, self.url)
@@ -148,8 +150,7 @@ final class CountriesListPresenter: CountriesListPresenterProtocol {
 
     private func getImages(country: CountryData) -> [String] {
         let countryImages = country.images?.allObjects as? [CountryImages]
-        guard let countryImages = countryImages,
-            !countryImages.isEmpty else {
+        guard let countryImages = countryImages, !countryImages.isEmpty else {
             return [country.flag]
         }
         return countryImages.map {
@@ -158,7 +159,7 @@ final class CountriesListPresenter: CountriesListPresenterProtocol {
     }
 
     func tapOnCountry(country: CountryViewData) {
-        router?.showDetails(country: country)
+        router.showDetails(country: country)
     }
 
 }

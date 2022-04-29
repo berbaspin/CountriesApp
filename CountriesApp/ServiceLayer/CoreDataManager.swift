@@ -26,7 +26,7 @@ final class CoreDataManager: CoreDataManagerProtocol {
             guard let error = error as NSError? else {
                 return
             }
-            fatalError("Unresolved error \(error), \(error.userInfo)")
+            fatalError("Unresolved error \(error), \(error.userInfo)")//
         }
         return container
     }()
@@ -41,20 +41,19 @@ final class CoreDataManager: CoreDataManagerProtocol {
         do {
             try context.save()
         } catch {
-            let nserror = error as NSError
-            fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
+            let nserror = error as NSError // а зачем
+            fatalError("Unresolved error \(nserror), \(nserror.userInfo)") //
         }
 
     }
 
     func saveCountry(country: Country) {
-        guard !isEntityAttributeExist(name: country.name, entityName: "CountryData") else {
+        guard !isEntityAttributeExist(name: country.name, entityName: "CountryData") else { // текстов
             return
         }
 
         let newCountry = CountryData(context: viewContext, country: country)
-        var images = country.countryInfo.images
-        images.append(country.image)
+        let images = country.countryInfo.images + [country.image]
         newCountry.images = NSSet(array: saveImages(country: newCountry, images: images))
         saveContext()
     }
@@ -71,12 +70,12 @@ final class CoreDataManager: CoreDataManagerProtocol {
         do {
             return try viewContext.fetch(fetchRequest)
         } catch {
-            print("Failed to fetch data from Core Data: \(error.localizedDescription)")
+            print("Failed to fetch data from Core Data: \(error.localizedDescription)") // Logger().info
             return []
         }
     }
 
-    private func isEntityAttributeExist(name: String, entityName: String) -> Bool {
+    private func isEntityAttributeExist(name: String, entityName: String) -> Bool { // имя не говорит что делает функция
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entityName)
         fetchRequest.predicate = NSPredicate(format: "name == %@", name)
 

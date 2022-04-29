@@ -95,11 +95,10 @@ extension CountriesListViewController: UITableViewDelegate {
         guard indexPath.row == countriesToDisplay.count - 1  else {
             return
         }
+      tableView.tableFooterView?.isHidden = !isSpinnerShown // isSpinnerHidden
+
         if isSpinnerShown {
-            tableView.tableFooterView?.isHidden = false
             presenter.getMoreCountries()
-        } else {
-            tableView.tableFooterView?.isHidden = true
         }
     }
 }

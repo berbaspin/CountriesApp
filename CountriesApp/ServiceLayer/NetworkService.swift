@@ -30,7 +30,7 @@ final class NetworkService: NetworkServiceProtocol {
             case let (_, .some(error)):
                 completion(.failure(error))
             case (nil, nil):
-                fatalError("Problem with creating a Data Task")
+                fatalError("Problem with creating a Data Task")//
             }
         }
     }

@@ -9,19 +9,18 @@ import Foundation
 
 protocol CountryDetailViewProtocol: AnyObject {
     func setCountry(country: CountryViewData)
-    func setImages(_ images: [String], showPageControl: Bool)
+    func setImages(_ images: [String], showPageControl: Bool) // объединить
 }
 
 protocol CountryDetailsPresenterProtocol {
     func getCountry()
-    func getImages()
-    var country: CountryViewData { get set }
+    func getImages() // объединить
 }
 
 final class CountryDetailsPresenter: CountryDetailsPresenterProtocol {
 
     private weak var view: CountryDetailViewProtocol?
-    var country: CountryViewData
+    var country: CountryViewData // а можно let
 
     init(view: CountryDetailViewProtocol, country: CountryViewData) {
         self.view = view
@@ -29,13 +28,8 @@ final class CountryDetailsPresenter: CountryDetailsPresenterProtocol {
     }
 
     func getImages() {
-        let images = country.images
-        if images.count > 1 {
-            view?.setImages(images, showPageControl: true)
-        } else {
-            view?.setImages(images, showPageControl: false)
-        }
-    }
+      view?.setImages( country.images, showPageControl: images.count > 1 )
+    } // объединить
 
     func getCountry() {
         view?.setCountry(country: country)

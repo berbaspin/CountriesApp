@@ -27,13 +27,12 @@ extension UIImageView {
             guard let self = self else {
                 return
             }
+          guard let downloadedImage = UIImage(data: data) else {
+              return
+          }
+          CacheManager.shared.saveData(with: data, response: response)
             DispatchQueue.main.async {
-                guard let downloadedImage = UIImage(data: data) else {
-                    return
-                }
-                CacheManager.shared.saveData(with: data, response: response)
                 self.image = downloadedImage
-
             }
         }
         return task
