@@ -15,34 +15,31 @@ public extension CountryData {
         NSFetchRequest<CountryData>(entityName: "CountryData")
     }
 
-    @NSManaged var name: String?
-    @NSManaged var continent: String?
-    @NSManaged var capital: String?
+    @NSManaged var name: String
+    @NSManaged var continent: String
+    @NSManaged var capital: String
     @NSManaged var population: Int32
     @NSManaged var smallDescription: String?
     @NSManaged var longDescription: String?
-    @NSManaged var flag: String?
+    @NSManaged var flag: String
     @NSManaged var images: NSSet?
 
 }
 
-// MARK: Generated accessors for images
-public extension CountryData {
-
-    @objc(addImagesObject:)
-    @NSManaged func addToImages(_ value: CountryImages)
-
-    @objc(removeImagesObject:)
-    @NSManaged func removeFromImages(_ value: CountryImages)
-
-    @objc(addImages:)
-    @NSManaged func addToImages(_ values: NSSet)
-
-    @objc(removeImages:)
-    @NSManaged func removeFromImages(_ values: NSSet)
+// MARK: Identifiable
+extension CountryData: Identifiable {
 
 }
 
-extension CountryData: Identifiable {
-
+extension CountryData {
+    convenience init(context: NSManagedObjectContext, country: Country) {
+        self.init(context: context)
+        name = country.name
+        continent = country.continent
+        capital = country.capital
+        population = Int32(country.population)
+        smallDescription = country.descriptionSmall
+        longDescription = country.description
+        flag = country.countryInfo.flag
+    }
 }

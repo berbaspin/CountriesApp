@@ -7,25 +7,18 @@
 
 import UIKit
 
-class CountryDetailsCollectionViewCell: UICollectionViewCell {
+final class CountryDetailsCollectionViewCell: UICollectionViewCell {
 
-    @IBOutlet private var image: UIImageView!
-    private var imageURL: String? {
-        didSet {
-            if let url = imageURL {
-                self.image.image = UIImage(named: "imagePlaceholder")
-                UIImage.loadImageUsingCache(from: url) { image in
-                    if url == self.imageURL {
-                        self.image.image = image
-                    }
-                }
-            } else {
-                self.image.image = nil
-            }
-        }
+    @IBOutlet private var countryImageView: UIImageView!
+    private var imageRequest: URLSessionDataTask?
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        countryImageView.image = nil
     }
+
     func setup(imageString: String) {
-        imageURL = imageString
+        imageRequest = countryImageView.loadUsingCache(from: imageString)
     }
 
 }

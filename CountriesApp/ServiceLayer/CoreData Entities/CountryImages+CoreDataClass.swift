@@ -10,6 +10,6 @@ import CoreData
 import Foundation
 
 @objc(CountryImages)
-public class CountryImages: NSManagedObject {
+public final class CountryImages: NSManagedObject {
 
 }

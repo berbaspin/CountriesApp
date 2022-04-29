@@ -7,7 +7,7 @@
 
 import UIKit
 
-class CountryDetailsViewController: UIViewController {
+final class CountryDetailsViewController: UIViewController {
 
     @IBOutlet private var imagesCollectionView: UICollectionView!
     @IBOutlet private var imagesPageControl: UIPageControl!
@@ -17,17 +17,22 @@ class CountryDetailsViewController: UIViewController {
     // swiftlint:disable:next implicitly_unwrapped_optional
     var presenter: CountryDetailsPresenterProtocol!
     private var countryToDisplay: CountryViewData?
+    private var isImagesPageControlShown = false
+    private var images = [String]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        presenter.setCountry()
+        presenter.getCountry()
+        presenter.getImages()
         setupImagesCollectionView()
         setupTableView()
-        nameLabel.text = countryToDisplay?.name
-        descriptionLabel.text = countryToDisplay?.description
     }
+}
 
-    private func setupImagesCollectionView() {
+// MARK: - Setup methods
+
+private extension CountryDetailsViewController {
+    func setupImagesCollectionView() {
         let imageCell = UINib(nibName: String(describing: CountryDetailsCollectionViewCell.self), bundle: nil)
         imagesCollectionView.register(
             imageCell, forCellWithReuseIdentifier: String(describing: CountryDetailsCollectionViewCell.self)
@@ -35,29 +40,32 @@ class CountryDetailsViewController: UIViewController {
         setupImagesPageControl()
     }
 
-    private func setupTableView() {
+    func setupTableView() {
         let informationCell = UINib(nibName: String(describing: InformationCell.self), bundle: nil)
         informationTableView.register(informationCell, forCellReuseIdentifier: String(describing: InformationCell.self))
     }
 
-    private func setupImagesPageControl() {
-        guard let countryToDisplay = countryToDisplay else {
-            return
-        }
-        if countryToDisplay.images.count > 1 {
-            imagesPageControl.numberOfPages = countryToDisplay.images.count
+    func setupImagesPageControl() {
+        if isImagesPageControlShown {
+            imagesPageControl.numberOfPages = images.count
         } else {
             imagesPageControl.isHidden = true
         }
     }
-
 }
 
 // MARK: - CountryDetailViewProtocol
 
 extension CountryDetailsViewController: CountryDetailViewProtocol {
+    func setImages(_ images: [String], showPageControl: Bool) {
+        self.images = images
+        isImagesPageControlShown = showPageControl
+    }
+
     func setCountry(country: CountryViewData) {
         countryToDisplay = country
+        nameLabel.text = country.name
+        descriptionLabel.text = country.description
     }
 }
 
@@ -65,7 +73,7 @@ extension CountryDetailsViewController: CountryDetailViewProtocol {
 
 extension CountryDetailsViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        countryToDisplay?.images.count ?? 0
+        images.count
     }
 
     func collectionView(
@@ -75,10 +83,8 @@ extension CountryDetailsViewController: UICollectionViewDataSource {
         let cell = collectionView.dequeueReusableCell(
             withReuseIdentifier: String(describing: CountryDetailsCollectionViewCell.self), for: indexPath
         ) as? CountryDetailsCollectionViewCell
-        if let country = countryToDisplay {
-            cell?.setup(imageString: country.images[indexPath.row])
-        }
-        cell?.backgroundColor = .blue
+        cell?.setup(imageString: images[indexPath.row])
+
         return cell ?? UICollectionViewCell()
     }
 

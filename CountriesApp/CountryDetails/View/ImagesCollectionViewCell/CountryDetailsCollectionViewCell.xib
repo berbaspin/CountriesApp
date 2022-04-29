@@ -30,7 +30,7 @@
             </constraints>
             <size key="customSize" width="354" height="165"/>
             <connections>
-                <outlet property="image" destination="YkM-cg-wIf" id="xJR-Ch-u2I"/>
+                <outlet property="countryImageView" destination="YkM-cg-wIf" id="HdT-TU-7TO"/>
             </connections>
             <point key="canvasLocation" x="265.21739130434787" y="78.683035714285708"/>
         </collectionViewCell>

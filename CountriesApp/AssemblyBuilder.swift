@@ -30,7 +30,7 @@ final class AssenlyBuilder: AssemblyBuilderProtocol {
 
     func createCountryDetailsModule(country: CountryViewData, router: RouterProtocol) -> UIViewController {
         let countryDetailsViewController = CountryDetailsViewController()
-        let presenter = CountryDetailsPresenter(view: countryDetailsViewController, router: router, country: country)
+        let presenter = CountryDetailsPresenter(view: countryDetailsViewController, country: country)
         countryDetailsViewController.presenter = presenter
         return countryDetailsViewController
     }

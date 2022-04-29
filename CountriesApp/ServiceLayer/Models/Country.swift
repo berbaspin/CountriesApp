@@ -4,6 +4,7 @@
 //
 //  Created by Дмитрий Бабаев on 04.04.2022.
 //
+import Foundation
 
 struct CountriesWrapped: Decodable {
     let next: String

@@ -8,44 +8,31 @@
 import Foundation
 
 protocol NetworkDataFetcherProtocol {
-    func getCountries(from urlString: String, response: @escaping ([Country], String?) -> Void)
+    func getCountries(from url: URL, response: @escaping ([Country], URL?) -> Void)
 }
 
-class NetworkDataFetcher: NetworkDataFetcherProtocol {
+final class NetworkDataFetcher: NetworkDataFetcherProtocol {
 
     private let networkService: NetworkServiceProtocol
     private let decoder = JSONDecoder()
 
     init(networkService: NetworkServiceProtocol) {
         self.networkService = networkService
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
     }
 
-    func getCountries(from urlString: String, response: @escaping ([Country], String?) -> Void) {
-        networkService.request(from: urlString) { [weak self] result in
+    func getCountries(from url: URL, response: @escaping ([Country], URL?) -> Void) {
+        networkService.request(from: url) { [weak self] result in
+            guard let self = self else {
+                return
+            }
             switch result {
             case .success(let data):
-                let decoded = self?.decodeJSON(type: CountriesWrapped.self, from: data)
-                response(decoded?.countries ?? [], decoded?.next)
+                let decoded = try? self.decoder.decode(CountriesWrapped.self, from: data)
+                response(decoded?.countries ?? [], URL(string: decoded?.next ?? ""))
             case .failure(let error):
                 print("Error received requesting: \(error.localizedDescription)")
             }
         }
     }
-
-    private func decodeJSON<T: Decodable>(type: T.Type, from data: Data?) -> T? {
-        decoder.keyDecodingStrategy = .convertFromSnakeCase
-        guard let data = data else {
-            return nil
-        }
-
-        do {
-            let decodedData = try decoder.decode(type.self, from: data)
-            return decodedData
-        } catch let error as NSError {
-            print("Failed \(error.localizedDescription)")
-            return nil
-        }
-
-    }
-
 }

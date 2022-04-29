@@ -19,6 +19,3 @@ struct CountryViewData {
     let images: [String]
 
 }
-
-extension CountryViewData: Equatable {
-}

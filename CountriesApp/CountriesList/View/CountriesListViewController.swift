@@ -7,52 +7,59 @@
 
 import UIKit
 
-class CountriesListViewController: UIViewController, CountriesListViewProtocol {
+final class CountriesListViewController: UIViewController {
 
     @IBOutlet private var countriesTableView: UITableView!
     private let refreshControl = UIRefreshControl()
     // swiftlint:disable:next implicitly_unwrapped_optional
     var presenter: CountriesListPresenterProtocol!
+    private var isSpinnerShown = false
     private var countriesToDisplay = [CountryViewData]()
-    private var showSpinner = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        setup()
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        guard let index = self.countriesTableView.indexPathForSelectedRow else {
+            return
+        }
+
+        self.countriesTableView.deselectRow(at: index, animated: true)
+    }
+}
+
+// MARK: - Setup methods
+
+private extension CountriesListViewController {
+    func setup() {
         self.title = "Countries".localized()
         let countryCellNib = UINib(nibName: String(describing: CountryCell.self), bundle: nil)
         countriesTableView.register(countryCellNib, forCellReuseIdentifier: String(describing: CountryCell.self))
 
         refreshControl.addTarget(self, action: #selector(refreshData), for: .valueChanged)
         countriesTableView.refreshControl = refreshControl
+
+        let spinnerFooter = SpinnerView(frame: CGRect(x: 0, y: 0, width: view.frame.size.width, height: 50))
+        countriesTableView.tableFooterView = spinnerFooter
     }
 
     @objc
-    private func refreshData() {
+    func refreshData() {
         presenter.getLatestCountries()
         refreshControl.endRefreshing()
     }
+}
 
-    func setMoreCountries(_ countries: [CountryViewData], showPagination: Bool) {
-        showSpinner = showPagination
-        countriesToDisplay += countries
-        countriesTableView.reloadData()
-    }
+// MARK: - CountriesListViewProtocol
 
-    func setLatestCountries(_ countries: [CountryViewData], showPagination: Bool) {
-        showSpinner = showPagination
+extension CountriesListViewController: CountriesListViewProtocol {
+    func setCountries(_ countries: [CountryViewData], showPagination: Bool) {
+        isSpinnerShown = showPagination
         countriesToDisplay = countries
         countriesTableView.reloadData()
-    }
-
-    private func createSpinerFooter() -> UIView {
-        let footerView = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.size.width, height: 100))
-
-        let spinner = UIActivityIndicatorView()
-        spinner.center = footerView.center
-        footerView.addSubview(spinner)
-        spinner.startAnimating()
-
-        return footerView
     }
 }
 
@@ -82,18 +89,17 @@ extension CountriesListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let country = countriesToDisplay[indexPath.row]
         presenter.tapOnCountry(country: country)
-        tableView.deselectRow(at: indexPath, animated: false)
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         guard indexPath.row == countriesToDisplay.count - 1  else {
             return
         }
-        if showSpinner {
-            tableView.tableFooterView = createSpinerFooter()
+        if isSpinnerShown {
+            tableView.tableFooterView?.isHidden = false
             presenter.getMoreCountries()
         } else {
-            tableView.tableFooterView = nil
+            tableView.tableFooterView?.isHidden = true
         }
     }
 }

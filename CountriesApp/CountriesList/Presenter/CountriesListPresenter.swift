@@ -8,27 +8,25 @@
 import Foundation
 
 protocol CountriesListViewProtocol: AnyObject {
-    func setMoreCountries(_ countries: [CountryViewData], showPagination: Bool)
-    func setLatestCountries(_ countries: [CountryViewData], showPagination: Bool)
+    func setCountries(_ countries: [CountryViewData], showPagination: Bool)
 }
 
-protocol CountriesListPresenterProtocol: AnyObject {
+protocol CountriesListPresenterProtocol {
     func getMoreCountries()
     func getLatestCountries()
     func tapOnCountry(country: CountryViewData)
 }
 
-class CountriesListPresenter: CountriesListPresenterProtocol {
-    weak var view: CountriesListViewProtocol?
-    // swiftlint:disable:next implicitly_unwrapped_optional
-    let networkDataFetcher: NetworkDataFetcherProtocol!
-    // swiftlint:disable:next implicitly_unwrapped_optional
-    let coreDataManager: CoreDataManagerProtocol!
+final class CountriesListPresenter: CountriesListPresenterProtocol {
+    private weak var view: CountriesListViewProtocol?
+    private let networkDataFetcher: NetworkDataFetcherProtocol
+    private let coreDataManager: CoreDataManagerProtocol
     private var router: RouterProtocol?
     private var countries = [CountryViewData]()
-    private var urlString: String = API.countries
+    private var url = URL(string: API.countries)
     private var isLoading = true
-    private var newCountries = [CountryViewData]()
+    private let numberOfCountriesToReturn = 4
+    private var countriesToDisplay = [CountryViewData]()
 
     private var numberFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
@@ -49,122 +47,115 @@ class CountriesListPresenter: CountriesListPresenterProtocol {
         self.coreDataManager = coreDataManager
         self.router = router
         getLatestCountries()
+        // coreDataManager.deleteAllCountries()
+        // coreDataManager.deleteAllImages()
     }
 
     func getMoreCountries() {
-        if !urlString.isEmpty {
-            getCountries(from: urlString) { [weak self] countries, urlString in
-                guard let self = self else {
-                    return
-                }
-                var durationSeconds = 0.0
-                if self.urlString != API.countries {
-                    durationSeconds = 2.0
-                }
-                if let urlString = urlString {
-                    self.urlString = urlString
-                }
-                self.countries += countries
-
-                self.setCountries(duration: durationSeconds)
-            }
-        } else {
+        guard let url = url else {
             setCountries(duration: 2.0)
+            return
+        }
+
+        getCountries(from: url) { [weak self] countries, urlString in
+            guard let self = self else {
+                return
+            }
+            var durationSeconds = 0.0
+            if self.url != URL(string: API.countries) {
+                durationSeconds = 2.0
+            }
+            if let urlString = urlString {
+                self.url = urlString
+            }
+            self.setCountries(duration: durationSeconds)
         }
     }
-// duration is a delay for displaying pagination
+
+// duration is used to show a delay to display pagination, because API is too fast
+// variable "duration" adds 2 second delay
+// variable "numberOfCountriesToReturn" help to show 4 elements per request
+
     private func setCountries(duration: Double) {
-        var elements = [CountryViewData]()
-        if countries.count > 4 {
-            elements = Array(countries.prefix(4))
-            countries = Array(countries[4 ..< countries.count])
+        if (countries.count - countriesToDisplay.count) > numberOfCountriesToReturn {
+            self.countriesToDisplay = Array(countries.prefix(self.countriesToDisplay.count + numberOfCountriesToReturn))
             isLoading = true
         } else {
-            elements = Array(countries.prefix(countries.count))
-            countries = []
+            self.countriesToDisplay = countries
             isLoading = false
         }
+
         DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
-            if !elements.isEmpty {
-                self.view?.setMoreCountries(elements, showPagination: self.isLoading)
-            }
+            self.view?.setCountries(self.countriesToDisplay, showPagination: self.isLoading)
         }
     }
 
     func getLatestCountries() {
-        getCountries(from: API.countries) { [weak self] countries, urlString in
+        guard let url = URL(string: API.countries) else {
+            return
+        }
+        getCountries(from: url) { [weak self] countries, url in
             guard let self = self else {
                 return
             }
 
-            if let urlString = urlString {
-                self.urlString = urlString
+            if let url = url {
+                self.url = url
             }
 
-            let elements = Array(countries.prefix(4))
-            if countries.count > 4 {
-                self.countries = Array(countries[4 ..< countries.count])
-            }
-
+            self.countriesToDisplay = Array(countries.prefix(self.numberOfCountriesToReturn))
             DispatchQueue.main.async {
-                self.view?.setLatestCountries(elements, showPagination: true)
+                self.view?.setCountries(self.countriesToDisplay, showPagination: true)
             }
         }
     }
 
-    private func getCountries(from urlString: String?, completion: @escaping ([CountryViewData], String?) -> Void) {
-        guard let urlString = urlString else {
+    private func getCountries(from url: URL?, completion: @escaping ([CountryViewData], URL?) -> Void) {
+        guard let url = url else {
             return
         }
 
-        let group = DispatchGroup()
-        group.enter()
-
-        DispatchQueue.main.async { [weak self] in
+        self.networkDataFetcher.getCountries(from: url) { [weak self] countries, url in
             guard let self = self else {
                 return
             }
-            self.networkDataFetcher.getCountries(from: urlString) { countries, urlString in
-                if let urlString = urlString {
-                    self.urlString = urlString
-                }
-
-                for country in countries {
-                    self.coreDataManager.saveCountry(country: country)
-                }
-                group.leave()
+            if let url = url {
+                self.url = url
             }
+
+            for country in countries {
+                self.coreDataManager.saveCountry(country: country)
+            }
+
+            self.getLocalData()
+            completion(self.countries, self.url)
         }
+    }
 
-        group.notify(queue: .main) { [weak self] in
-            guard let self = self else {
-                return
-            }
-            let countries = self.coreDataManager.getCountries()
-            let mappedCountries = countries.map {
-                CountryViewData(
-                    name: $0.name ?? "",
-                    capital: $0.capital ?? "",
-                    population: self.numberFormatter.string(from: $0.population as NSNumber) ?? "0",
-                    continent: $0.continent ?? "",
-                    description: $0.longDescription ?? "",
-                    shortDescription: $0.smallDescription ?? "",
-                    flag: $0.flag ?? "",
-                    images:
-                        !($0.images?.allObjects as? [CountryImages] ?? []).isEmpty
-                    ? ($0.images?.allObjects as? [CountryImages] ?? []).map { $0.imageUrl ?? "" }
-                    : [$0.flag ?? ""]
-                )
-            }
+    private func getLocalData() {
+        let countries = coreDataManager.getCountries()
+        self.countries = countries.map {
+            CountryViewData(
+                name: $0.name,
+                capital: $0.capital,
+                population: numberFormatter.string(from: $0.population as NSNumber) ?? "0",
+                continent: $0.continent,
+                description: $0.longDescription ?? "",
+                shortDescription: $0.smallDescription ?? "",
+                flag: $0.flag,
+                images: getImages(country: $0)
+            )
+        }
+    }
 
-            for mappedCountry in mappedCountries {
-                if !self.newCountries.contains(mappedCountry) {
-                    self.newCountries.append(mappedCountry)
-                } else {
-                    self.newCountries = self.newCountries.filter { $0 != mappedCountry }
-                }
-            }
-            completion(self.newCountries, self.urlString)
+    private func getImages(country: CountryData) -> [String] {
+        let countryImages = country.images?.allObjects as? [CountryImages]
+        guard let countryImages = countryImages,
+            !countryImages.isEmpty else {
+            return [country.flag]
+        }
+        return countryImages.map {
+            $0.imageUrl
         }
     }
 

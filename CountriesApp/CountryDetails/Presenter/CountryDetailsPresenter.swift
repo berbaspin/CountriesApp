@@ -9,28 +9,35 @@ import Foundation
 
 protocol CountryDetailViewProtocol: AnyObject {
     func setCountry(country: CountryViewData)
+    func setImages(_ images: [String], showPageControl: Bool)
 }
 
-protocol CountryDetailsPresenterProtocol: AnyObject {
-    func setCountry()
+protocol CountryDetailsPresenterProtocol {
+    func getCountry()
+    func getImages()
+    var country: CountryViewData { get set }
 }
 
-class CountryDetailsPresenter: CountryDetailsPresenterProtocol {
+final class CountryDetailsPresenter: CountryDetailsPresenterProtocol {
 
-    weak var view: CountryDetailViewProtocol?
-    var router: RouterProtocol?
-    var country: CountryViewData?
+    private weak var view: CountryDetailViewProtocol?
+    var country: CountryViewData
 
-    init(view: CountryDetailViewProtocol, router: RouterProtocol, country: CountryViewData?) {
+    init(view: CountryDetailViewProtocol, country: CountryViewData) {
         self.view = view
-        self.router = router
         self.country = country
     }
 
-    func setCountry() {
-        guard let country = country else {
-            return
+    func getImages() {
+        let images = country.images
+        if images.count > 1 {
+            view?.setImages(images, showPageControl: true)
+        } else {
+            view?.setImages(images, showPageControl: false)
         }
+    }
+
+    func getCountry() {
         view?.setCountry(country: country)
     }
 

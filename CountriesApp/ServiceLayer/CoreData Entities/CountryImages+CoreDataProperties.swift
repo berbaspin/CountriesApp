@@ -16,11 +16,19 @@ public extension CountryImages {
         NSFetchRequest<CountryImages>(entityName: "CountryImages")
     }
 
-    @NSManaged var imageUrl: String?
-    @NSManaged var country: CountryData?
+    @NSManaged var imageUrl: String
+    @NSManaged var country: CountryData
 
 }
 
 extension CountryImages: Identifiable {
 
+}
+
+extension CountryImages {
+    convenience init(context: NSManagedObjectContext, country: CountryData, imageUrl: String) {
+        self.init(context: context)
+        self.country = country
+        self.imageUrl = imageUrl
+    }
 }

@@ -7,32 +7,24 @@
 
 import UIKit
 
-class CountryCell: UITableViewCell {
+final class CountryCell: UITableViewCell {
 
     @IBOutlet private var countryImage: UIImageView!
     @IBOutlet private var nameLabel: UILabel!
     @IBOutlet private var capitalLabel: UILabel!
     @IBOutlet private var descriptionLabel: UILabel!
+    private var imageRequest: URLSessionDataTask?
 
-    private var countryImageURL: String? {
-        didSet {
-            if let url = countryImageURL {
-                self.countryImage.image = UIImage(named: "imagePlaceholder")
-                UIImage.loadImageUsingCache(from: url) { image in
-                    if url == self.countryImageURL {
-                        self.countryImage.image = image
-                    }
-                }
-            } else {
-                self.countryImage.image = nil
-            }
-        }
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        countryImage.image = nil
+        imageRequest?.cancel()
     }
 
     func setup(country: CountryViewData) {
         nameLabel.text = country.name
         capitalLabel.text = country.capital
         descriptionLabel.text = country.shortDescription
-        countryImageURL = country.flag
+        imageRequest = countryImage.loadUsingCache(from: country.flag)
     }
 }

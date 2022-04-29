@@ -7,29 +7,25 @@
 
 import UIKit
 
-class InformationCell: UITableViewCell {
+final class InformationCell: UITableViewCell {
 
     @IBOutlet private var fieldImage: UIImageView!
     @IBOutlet private var fieldLabel: UILabel!
     @IBOutlet private var countryDetailLabel: UILabel!
 
     func setup(index: Int, country: CountryViewData) {
+        let countryInformation = CountryInformation.allCases[index]
 
-        switch index {
-        case 0:
-            fieldImage.image = UIImage(systemName: "star")
-            fieldLabel.text = "Capital"
+        fieldImage.image = UIImage(systemName: countryInformation.icon)
+        fieldLabel.text = countryInformation.rawValue.capitalized
+
+        switch countryInformation {
+        case .capital:
             countryDetailLabel.text = country.capital
-        case 1:
-            fieldImage.image = UIImage(systemName: "face.smiling")
-            fieldLabel.text = "Population"
+        case .population:
             countryDetailLabel.text = country.population
-        case 2:
-            fieldImage.image = UIImage(systemName: "globe.asia.australia")
-            fieldLabel.text = "Continent"
+        case .continent:
             countryDetailLabel.text = country.continent
-        default:
-            fieldLabel.text = "???"
         }
     }
 
