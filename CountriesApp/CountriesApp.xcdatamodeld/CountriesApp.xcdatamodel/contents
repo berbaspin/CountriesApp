@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="20086" systemVersion="21D62" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="20086" systemVersion="21E258" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="CountryData" representedClassName="CountryData" syncable="YES">
         <attribute name="capital" attributeType="String"/>
         <attribute name="continent" attributeType="String"/>
         <attribute name="flag" attributeType="String"/>
-        <attribute name="longDescription" attributeType="String"/>
+        <attribute name="longDescription" optional="YES" attributeType="String"/>
         <attribute name="name" attributeType="String"/>
         <attribute name="population" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="smallDescription" attributeType="String"/>
+        <attribute name="smallDescription" optional="YES" attributeType="String"/>
         <relationship name="images" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CountryImages" inverseName="country" inverseEntity="CountryImages"/>
     </entity>
     <entity name="CountryImages" representedClassName="CountryImages" syncable="YES">

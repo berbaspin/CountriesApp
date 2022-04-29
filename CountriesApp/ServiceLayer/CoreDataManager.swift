@@ -11,8 +11,6 @@ import Foundation
 protocol CoreDataManagerProtocol {
     func saveCountry(country: Country)
     func getCountries() -> [CountryData]
-    func deleteAllCountries()
-    func deleteAllImages()
 }
 
 final class CoreDataManager: CoreDataManagerProtocol {
@@ -88,28 +86,6 @@ final class CoreDataManager: CoreDataManagerProtocol {
         } catch {
             print(error.localizedDescription)
             return false
-        }
-    }
-
-    func deleteAllCountries() {
-        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: "CountryData")
-        let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
-
-        do {
-            try viewContext.execute(deleteRequest)
-        } catch {
-            print(error.localizedDescription)
-        }
-    }
-
-    func deleteAllImages() {
-        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: "CountryImages")
-        let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
-
-        do {
-            try viewContext.execute(deleteRequest)
-        } catch {
-            print(error.localizedDescription)
         }
     }
 }

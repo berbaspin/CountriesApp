@@ -47,8 +47,6 @@ final class CountriesListPresenter: CountriesListPresenterProtocol {
         self.coreDataManager = coreDataManager
         self.router = router
         getLatestCountries()
-        // coreDataManager.deleteAllCountries()
-        // coreDataManager.deleteAllImages()
     }
 
     func getMoreCountries() {
