@@ -11,13 +11,11 @@ import XCTest
 final class CountryDetailsPresenterTests: XCTestCase {
 
     // MARK: - Private Properties
-
     private var sut: CountryDetailsPresenter?
     private var viewController: CountryDetailsDisplayLogicSpy!
     private var country: CountryViewData?
 
     // MARK: - Lifecycle
-
     override func setUpWithError() throws {
         try super.setUpWithError()
 

@@ -9,10 +9,12 @@
 import XCTest
 
 final class NetworkServiceTests: XCTestCase {
-    // MARK: - Properties
+    
+    // MARK: - Private Properties
     private var sut: NetworkService?
     private let session = MockURLSession()
 
+    // MARK: - Lifecycle
     override func setUpWithError() throws {
         try super.setUpWithError()
         sut = NetworkService(session: session)

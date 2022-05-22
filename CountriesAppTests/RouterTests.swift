@@ -9,11 +9,13 @@
 import XCTest
 
 final class RouterTests: XCTestCase {
-
+    
+    // MARK: - Private Properties
     private var sut: RouterProtocol?
     private let navigationController = MockNavigationController()
     private let assemblyBuilder = AssenlyBuilder()
 
+    // MARK: - Lifecycle
     override func setUpWithError() throws {
         try super.setUpWithError()
         sut = Router(navigationController: navigationController, assemblyBuilder: assemblyBuilder)

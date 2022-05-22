@@ -10,6 +10,7 @@ import XCTest
 
 class CountryTests: XCTestCase {
 
+    // MARK: - Lifecycle
     override func setUpWithError() throws {
         try super.setUpWithError()
     }

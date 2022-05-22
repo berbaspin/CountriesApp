@@ -15,7 +15,6 @@ final class CountryListDisplayLogicSpy: CountriesListViewProtocol {
     private(set) var countries = [CountryViewData]()
 
     // MARK: - Public Methods
-
     func setCountries(_ countries: [CountryViewData], showPagination: Bool) {
         self.countries = countries
         isSpinnerHidden = showPagination

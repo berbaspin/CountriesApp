@@ -10,10 +10,12 @@ import CoreData
 import XCTest
 
 final class CoreDataTests: XCTestCase {
-    // MARK: - Properties
+
+    // MARK: - Private Properties
     // swiftlint:disable implicitly_unwrapped_optional
     private var coreDataManager: CoreDataManager!
 
+    // MARK: - Lifecycle
     override func setUpWithError() throws {
         try super.setUpWithError()
         coreDataManager = CoreDataManager(persistentStoreDescriptionType: NSInMemoryStoreType)

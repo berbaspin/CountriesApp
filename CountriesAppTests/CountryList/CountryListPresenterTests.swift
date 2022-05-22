@@ -12,12 +12,12 @@ import XCTest
 final class CountryListPresenterTests: XCTestCase {
 
     // MARK: - Private Properties
-
     private var sut: CountriesListPresenter?
     private var viewController: CountriesListViewProtocol!
     private var router: RouterSpy!
     private var networkDataFetcher: NetworkDataFetcherProtocol!
 
+    // MARK: - Lifecycle
     override func setUpWithError() throws {
         try super.setUpWithError()
 
@@ -35,7 +35,7 @@ final class CountryListPresenterTests: XCTestCase {
 
         try super.tearDownWithError()
     }
-
+    
     func testTapOnCountry() {
         let country = CountryViewData(
             name: "Foo",

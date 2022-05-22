@@ -8,11 +8,13 @@
 import XCTest
 
 final class NetworkDataFetcherTests: XCTestCase {
-
+    
+    // MARK: - Private Properties
     private var sut: NetworkDataFetcherProtocol?
     private var networkService: NetworkServiceProtocol!
     private let session = MockURLSession()
 
+    // MARK: - Lifecycle
     override func setUpWithError() throws {
         try super.setUpWithError()
 
