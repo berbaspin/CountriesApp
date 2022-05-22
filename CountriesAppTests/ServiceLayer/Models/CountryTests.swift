@@ -8,7 +8,7 @@
 @testable import CountriesApp
 import XCTest
 
-class CountryTests: XCTestCase {
+final class CountryTests: XCTestCase {
 
     // MARK: - Lifecycle
     override func setUpWithError() throws {
