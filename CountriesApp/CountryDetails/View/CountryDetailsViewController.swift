@@ -22,8 +22,7 @@ final class CountryDetailsViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        presenter.getCountry()
-        presenter.getImages()
+        presenter.getData()
         setupImagesCollectionView()
         setupTableView()
     }
@@ -57,19 +56,18 @@ private extension CountryDetailsViewController {
 // MARK: - CountryDetailViewProtocol
 
 extension CountryDetailsViewController: CountryDetailViewProtocol {
-    func setImages(_ images: [String], showPageControl: Bool) {
-        self.images = images
-        isImagesPageControlShown = showPageControl
-    }
 
-    func setCountry(country: CountryViewData) {
+    func setData(country: CountryViewData, images: [String], showPageControl: Bool) {
         countryToDisplay = country
         nameLabel.text = country.name
         descriptionLabel.text = country.description
+
+        self.images = images
+        isImagesPageControlShown = showPageControl
     }
 }
 
-// MARK: UICollectionViewDataSource
+// MARK: - UICollectionViewDataSource
 
 extension CountryDetailsViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -98,6 +96,8 @@ extension CountryDetailsViewController: UICollectionViewDataSource {
     }
 }
 
+// MARK: - UICollectionViewDelegateFlowLayout
+
 extension CountryDetailsViewController: UICollectionViewDelegateFlowLayout {
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         imagesPageControl.currentPage = Int(scrollView.contentOffset.x) / Int(scrollView.frame.width)
@@ -112,13 +112,22 @@ extension CountryDetailsViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let cell = tableView.dequeueReusableCell(
-        withIdentifier: String(describing: InformationCell.self), for: indexPath
-    ) as? InformationCell
+        let cell = tableView.dequeueReusableCell(
+            withIdentifier: String(describing: InformationCell.self), for: indexPath
+        ) as? InformationCell
         guard let countryToDisplay = countryToDisplay else {
-            return  UITableViewCell()
+            return UITableViewCell()
         }
-        cell?.setup(index: indexPath.row, country: countryToDisplay)
+        let countryInformation = CountryInformation.allCases[indexPath.row]
+
+        switch countryInformation {
+        case .capital:
+            cell?.setup(with: countryInformation, text: countryToDisplay.capital)
+        case .population:
+            cell?.setup(with: countryInformation, text: countryToDisplay.population)
+        case .continent:
+            cell?.setup(with: countryInformation, text: countryToDisplay.continent)
+        }
 
         return cell ?? UITableViewCell()
     }

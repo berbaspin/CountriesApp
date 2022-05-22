@@ -12,6 +12,13 @@ protocol NetworkServiceProtocol {
 }
 
 final class NetworkService: NetworkServiceProtocol {
+
+    private let session: URLSessionProtocol
+
+    init(session: URLSessionProtocol) {
+        self.session = session
+    }
+
     func request(from url: URL, completion: @escaping (Result<Data, Error>) -> Void) {
         let request = URLRequest(url: url)
         let task = createDataTask(from: request, completion: completion)
@@ -21,8 +28,8 @@ final class NetworkService: NetworkServiceProtocol {
     private func createDataTask(
         from request: URLRequest,
         completion: @escaping (Result<Data, Error>) -> Void
-    ) -> URLSessionDataTask {
-        URLSession.shared.dataTask(with: request) { data, _, error  in
+    ) -> URLSessionDataTaskProtocol {
+        session.dataTask(with: request) { data, _, error  in
 
             switch (data, error) {
             case let (.some(data), nil):
@@ -30,7 +37,7 @@ final class NetworkService: NetworkServiceProtocol {
             case let (_, .some(error)):
                 completion(.failure(error))
             case (nil, nil):
-                fatalError("Problem with creating a Data Task")
+                print("Problem with creating a Data Task")
             }
         }
     }

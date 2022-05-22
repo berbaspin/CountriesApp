@@ -22,10 +22,7 @@ final class NetworkDataFetcher: NetworkDataFetcherProtocol {
     }
 
     func getCountries(from url: URL, response: @escaping ([Country], URL?) -> Void) {
-        networkService.request(from: url) { [weak self] result in
-            guard let self = self else {
-                return
-            }
+        networkService.request(from: url) { [unowned self] result in
             switch result {
             case .success(let data):
                 let decoded = try? self.decoder.decode(CountriesWrapped.self, from: data)

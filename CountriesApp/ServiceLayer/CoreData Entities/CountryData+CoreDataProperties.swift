@@ -12,7 +12,7 @@ public extension CountryData {
 
     @nonobjc
     class func fetchRequest() -> NSFetchRequest<CountryData> {
-        NSFetchRequest<CountryData>(entityName: "CountryData")
+        NSFetchRequest<CountryData>(entityName: String(describing: CountryData.self))
     }
 
     @NSManaged var name: String
@@ -26,7 +26,8 @@ public extension CountryData {
 
 }
 
-// MARK: Identifiable
+// MARK: - Identifiable
+
 extension CountryData: Identifiable {
 
 }

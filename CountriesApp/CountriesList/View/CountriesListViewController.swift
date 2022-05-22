@@ -13,12 +13,13 @@ final class CountriesListViewController: UIViewController {
     private let refreshControl = UIRefreshControl()
     // swiftlint:disable:next implicitly_unwrapped_optional
     var presenter: CountriesListPresenterProtocol!
-    private var isSpinnerShown = false
+    private var isSpinnerHidden = true
     private var countriesToDisplay = [CountryViewData]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         setup()
+        presenter.getLatestCountries()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -57,7 +58,7 @@ private extension CountriesListViewController {
 
 extension CountriesListViewController: CountriesListViewProtocol {
     func setCountries(_ countries: [CountryViewData], showPagination: Bool) {
-        isSpinnerShown = showPagination
+        isSpinnerHidden = showPagination
         countriesToDisplay = countries
         countriesTableView.reloadData()
     }
@@ -95,11 +96,9 @@ extension CountriesListViewController: UITableViewDelegate {
         guard indexPath.row == countriesToDisplay.count - 1  else {
             return
         }
-        if isSpinnerShown {
-            tableView.tableFooterView?.isHidden = false
+        tableView.tableFooterView?.isHidden = isSpinnerHidden
+        if !isSpinnerHidden {
             presenter.getMoreCountries()
-        } else {
-            tableView.tableFooterView?.isHidden = true
         }
     }
 }

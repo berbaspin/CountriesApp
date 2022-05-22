@@ -17,14 +17,18 @@ protocol CountriesListPresenterProtocol {
     func tapOnCountry(country: CountryViewData)
 }
 
+private enum Constants {
+    static let duration = 2.0
+}
+
 final class CountriesListPresenter: CountriesListPresenterProtocol {
     private weak var view: CountriesListViewProtocol?
     private let networkDataFetcher: NetworkDataFetcherProtocol
     private let coreDataManager: CoreDataManagerProtocol
-    private var router: RouterProtocol?
+    private let router: RouterProtocol
     private var countries = [CountryViewData]()
     private var url = URL(string: API.countries)
-    private var isLoading = true
+    private var stopLoading = true
     private let numberOfCountriesToReturn = 4
     private var countriesToDisplay = [CountryViewData]()
 
@@ -46,12 +50,15 @@ final class CountriesListPresenter: CountriesListPresenterProtocol {
         self.networkDataFetcher = networkDataFetcher
         self.coreDataManager = coreDataManager
         self.router = router
-        getLatestCountries()
     }
+
+    // duration is used to show a delay to display pagination, because API is too fast
+    // variable "duration" adds 2 second delay
+    // variable "numberOfCountriesToReturn" help to show 4 elements per request
 
     func getMoreCountries() {
         guard let url = url else {
-            setCountries(duration: 2.0)
+            setCountries(duration: Constants.duration)
             return
         }
 
@@ -61,7 +68,7 @@ final class CountriesListPresenter: CountriesListPresenterProtocol {
             }
             var durationSeconds = 0.0
             if self.url != URL(string: API.countries) {
-                durationSeconds = 2.0
+                durationSeconds = Constants.duration
             }
             if let urlString = urlString {
                 self.url = urlString
@@ -70,21 +77,17 @@ final class CountriesListPresenter: CountriesListPresenterProtocol {
         }
     }
 
-// duration is used to show a delay to display pagination, because API is too fast
-// variable "duration" adds 2 second delay
-// variable "numberOfCountriesToReturn" help to show 4 elements per request
-
     private func setCountries(duration: Double) {
-        if (countries.count - countriesToDisplay.count) > numberOfCountriesToReturn {
-            self.countriesToDisplay = Array(countries.prefix(self.countriesToDisplay.count + numberOfCountriesToReturn))
-            isLoading = true
+        let isSpinnerHidden = (countries.count - countriesToDisplay.count) < numberOfCountriesToReturn
+        if isSpinnerHidden {
+            countriesToDisplay = countries
         } else {
-            self.countriesToDisplay = countries
-            isLoading = false
+            countriesToDisplay = Array(countries.prefix(countriesToDisplay.count + numberOfCountriesToReturn))
         }
+        stopLoading = isSpinnerHidden
 
         DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
-            self.view?.setCountries(self.countriesToDisplay, showPagination: self.isLoading)
+            self.view?.setCountries(self.countriesToDisplay, showPagination: self.stopLoading)
         }
     }
 
@@ -103,7 +106,7 @@ final class CountriesListPresenter: CountriesListPresenterProtocol {
 
             self.countriesToDisplay = Array(countries.prefix(self.numberOfCountriesToReturn))
             DispatchQueue.main.async {
-                self.view?.setCountries(self.countriesToDisplay, showPagination: true)
+                self.view?.setCountries(self.countriesToDisplay, showPagination: false)
             }
         }
     }
@@ -113,7 +116,7 @@ final class CountriesListPresenter: CountriesListPresenterProtocol {
             return
         }
 
-        self.networkDataFetcher.getCountries(from: url) { [weak self] countries, url in
+        networkDataFetcher.getCountries(from: url) { [weak self] countries, url in
             guard let self = self else {
                 return
             }
@@ -121,8 +124,8 @@ final class CountriesListPresenter: CountriesListPresenterProtocol {
                 self.url = url
             }
 
-            for country in countries {
-                self.coreDataManager.saveCountry(country: country)
+            countries.forEach {
+                self.coreDataManager.saveCountry(country: $0)
             }
 
             self.getLocalData()
@@ -158,7 +161,7 @@ final class CountriesListPresenter: CountriesListPresenterProtocol {
     }
 
     func tapOnCountry(country: CountryViewData) {
-        router?.showDetails(country: country)
+        router.showDetails(country: country)
     }
 
 }

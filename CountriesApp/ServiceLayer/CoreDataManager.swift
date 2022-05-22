@@ -14,19 +14,29 @@ protocol CoreDataManagerProtocol {
 }
 
 final class CoreDataManager: CoreDataManagerProtocol {
+    private let modelName = "CountriesApp"
+    private let persistentStoreDescriptionType: String
+
+    init(persistentStoreDescriptionType: String = NSSQLiteStoreType) {
+        self.persistentStoreDescriptionType = persistentStoreDescriptionType
+    }
     // MARK: - Core Data stack
 
     private var viewContext: NSManagedObjectContext {
         persistentContainer.viewContext
     }
 
-    lazy var persistentContainer: NSPersistentContainer = {
-        let container = NSPersistentContainer(name: "CountriesApp")
+    private lazy var persistentContainer: NSPersistentContainer = {
+        let persistentStoreDescription = NSPersistentStoreDescription()
+        persistentStoreDescription.type = persistentStoreDescriptionType
+
+        let container = NSPersistentContainer(name: modelName)
+        container.persistentStoreDescriptions = [persistentStoreDescription]
         container.loadPersistentStores { _, error in
-            guard let error = error as NSError? else {
+            guard let error = error else {
                 return
             }
-            fatalError("Unresolved error \(error), \(error.userInfo)")
+            print("Unresolved error \(error)")
         }
         return container
     }()
@@ -41,20 +51,18 @@ final class CoreDataManager: CoreDataManagerProtocol {
         do {
             try context.save()
         } catch {
-            let nserror = error as NSError
-            fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
+            print("Unresolved error \(error.localizedDescription)")
         }
 
     }
 
     func saveCountry(country: Country) {
-        guard !isEntityAttributeExist(name: country.name, entityName: "CountryData") else {
+        guard !isEntityAttributeValueExist(name: country.name, entityName: String(describing: CountryData.self)) else {
             return
         }
 
         let newCountry = CountryData(context: viewContext, country: country)
-        var images = country.countryInfo.images
-        images.append(country.image)
+        let images = country.countryInfo.images + [country.image]
         newCountry.images = NSSet(array: saveImages(country: newCountry, images: images))
         saveContext()
     }
@@ -76,7 +84,7 @@ final class CoreDataManager: CoreDataManagerProtocol {
         }
     }
 
-    private func isEntityAttributeExist(name: String, entityName: String) -> Bool {
+    private func isEntityAttributeValueExist(name: String, entityName: String) -> Bool {
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entityName)
         fetchRequest.predicate = NSPredicate(format: "name == %@", name)
 

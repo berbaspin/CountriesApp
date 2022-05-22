@@ -15,6 +15,7 @@ final class CountryDetailsCollectionViewCell: UICollectionViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         countryImageView.image = nil
+        imageRequest?.cancel()
     }
 
     func setup(imageString: String) {

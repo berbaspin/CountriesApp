@@ -15,7 +15,7 @@ protocol AssemblyBuilderProtocol {
 final class AssenlyBuilder: AssemblyBuilderProtocol {
     func createCoutriesListModule(router: RouterProtocol) -> UIViewController {
         let countriesListViewController = CountriesListViewController()
-        let networkService = NetworkService()
+        let networkService = NetworkService(session: URLSession.shared)
         let networkDataFetcher = NetworkDataFetcher(networkService: networkService)
         let coreDataManager = CoreDataManager()
         let presenter = CountriesListPresenter(

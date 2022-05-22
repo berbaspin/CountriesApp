@@ -11,15 +11,12 @@ import Foundation
 
 public extension CountryImages {
 
-    @nonobjc
-    class func fetchRequest() -> NSFetchRequest<CountryImages> {
-        NSFetchRequest<CountryImages>(entityName: "CountryImages")
-    }
-
     @NSManaged var imageUrl: String
     @NSManaged var country: CountryData
 
 }
+
+// MARK: - Identifiable
 
 extension CountryImages: Identifiable {
 
