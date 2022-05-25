@@ -44,6 +44,9 @@
 		13C82711283D13650055585A /* CacheManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13C82710283D13650055585A /* CacheManagerTests.swift */; };
 		13C82713283D28950055585A /* UIImageViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13C82712283D28950055585A /* UIImageViewTests.swift */; };
 		13DB8A6E283E210A009DA207 /* CountryInformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13DB8A6D283E210A009DA207 /* CountryInformation.swift */; };
+		13DB8A70283E6CB3009DA207 /* MockJSONData.json in Resources */ = {isa = PBXBuildFile; fileRef = 13DB8A6F283E6915009DA207 /* MockJSONData.json */; };
+		13DB8A71283E6CE1009DA207 /* MockJSONData.json in Resources */ = {isa = PBXBuildFile; fileRef = 13DB8A6F283E6915009DA207 /* MockJSONData.json */; };
+		13DB8A75283E903C009DA207 /* LocalJSONLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13DB8A74283E903C009DA207 /* LocalJSONLoader.swift */; };
 		13E1641627FD7DAE0060F58C /* CountryViewData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13E1641527FD7DAE0060F58C /* CountryViewData.swift */; };
 		13E1641927FD85840060F58C /* ImageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13E1641827FD85840060F58C /* ImageManager.swift */; };
 		13E1641B27FD895C0060F58C /* UIImageView+Load.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13E1641A27FD895B0060F58C /* UIImageView+Load.swift */; };
@@ -117,6 +120,8 @@
 		13C82710283D13650055585A /* CacheManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheManagerTests.swift; sourceTree = "<group>"; };
 		13C82712283D28950055585A /* UIImageViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageViewTests.swift; sourceTree = "<group>"; };
 		13DB8A6D283E210A009DA207 /* CountryInformation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryInformation.swift; sourceTree = "<group>"; };
+		13DB8A6F283E6915009DA207 /* MockJSONData.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = MockJSONData.json; sourceTree = "<group>"; };
+		13DB8A74283E903C009DA207 /* LocalJSONLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalJSONLoader.swift; sourceTree = "<group>"; };
 		13E1641527FD7DAE0060F58C /* CountryViewData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryViewData.swift; sourceTree = "<group>"; };
 		13E1641827FD85840060F58C /* ImageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageManager.swift; sourceTree = "<group>"; };
 		13E1641A27FD895B0060F58C /* UIImageView+Load.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Load.swift"; sourceTree = "<group>"; };
@@ -158,12 +163,14 @@
 		132E351E283272610055672E /* CountriesAppTests */ = {
 			isa = PBXGroup;
 			children = (
+				132E354828368EE80055672E /* RouterTests.swift */,
 				132E354628366B840055672E /* ServiceLayer */,
 				132E352A283392CF0055672E /* CountryList */,
 				132E3529283392B60055672E /* CountryDetails */,
-				132E354828368EE80055672E /* RouterTests.swift */,
 				13C8270D283CDA9B0055585A /* Extentions */,
 				132E35502837BE9E0055672E /* TestDoubles */,
+				13DB8A6F283E6915009DA207 /* MockJSONData.json */,
+				13DB8A74283E903C009DA207 /* LocalJSONLoader.swift */,
 			);
 			path = CountriesAppTests;
 			sourceTree = "<group>";
@@ -185,15 +192,6 @@
 			path = CountryList;
 			sourceTree = "<group>";
 		};
-		132E3545283644880055672E /* Mocks */ = {
-			isa = PBXGroup;
-			children = (
-				132E353D2836406F0055672E /* MockURLSession.swift */,
-				132E353F283640FF0055672E /* MockURLSessionDataTask.swift */,
-			);
-			path = Mocks;
-			sourceTree = "<group>";
-		};
 		132E354628366B840055672E /* ServiceLayer */ = {
 			isa = PBXGroup;
 			children = (
@@ -202,17 +200,8 @@
 				132E353B283628EE0055672E /* NetworkServiceTests.swift */,
 				132E354C28369A520055672E /* NetworkDataFetcherTests.swift */,
 				13C8270E283CE7BF0055585A /* ImageManagerTests.swift */,
-				132E354728366B950055672E /* TestDoubles */,
 			);
 			path = ServiceLayer;
-			sourceTree = "<group>";
-		};
-		132E354728366B950055672E /* TestDoubles */ = {
-			isa = PBXGroup;
-			children = (
-				132E3545283644880055672E /* Mocks */,
-			);
-			path = TestDoubles;
 			sourceTree = "<group>";
 		};
 		132E35502837BE9E0055672E /* TestDoubles */ = {
@@ -226,6 +215,8 @@
 		132E35512837BEA60055672E /* Mocks */ = {
 			isa = PBXGroup;
 			children = (
+				132E353D2836406F0055672E /* MockURLSession.swift */,
+				132E353F283640FF0055672E /* MockURLSessionDataTask.swift */,
 				132E354A2836936E0055672E /* MockNavigationController.swift */,
 				13EA9FCC283D38CE00D12126 /* MockRouter.swift */,
 				132E35332833B7780055672E /* MockCountryDetailsDisplayLogic.swift */,
@@ -519,6 +510,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				13DB8A71283E6CE1009DA207 /* MockJSONData.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -528,6 +520,7 @@
 			files = (
 				13E1642327FDBB260060F58C /* CountryDetailsCollectionViewCell.xib in Resources */,
 				13E2FE0727FC98E600B88326 /* CountryCell.xib in Resources */,
+				13DB8A70283E6CB3009DA207 /* MockJSONData.json in Resources */,
 				137A9C8127FB749800282214 /* LaunchScreen.storyboard in Resources */,
 				13E1641F27FDA17F0060F58C /* CountryDetailsViewController.xib in Resources */,
 				137A9C7E27FB749800282214 /* Assets.xcassets in Resources */,
@@ -568,6 +561,7 @@
 				132E354928368EE90055672E /* RouterTests.swift in Sources */,
 				13C8270F283CE7BF0055585A /* ImageManagerTests.swift in Sources */,
 				132E354F283790690055672E /* CountryInformationTests.swift in Sources */,
+				13DB8A75283E903C009DA207 /* LocalJSONLoader.swift in Sources */,
 				13C82711283D13650055585A /* CacheManagerTests.swift in Sources */,
 				132E3540283640FF0055672E /* MockURLSessionDataTask.swift in Sources */,
 				132E353A2833E1810055672E /* CoreDataManagerTests.swift in Sources */,

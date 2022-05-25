@@ -1,0 +1,18 @@
+{
+    "next":"https://mockurl",
+    "countries":[
+        {
+            "name": "England",
+            "continent": "Eurasia",
+            "capital": "London",
+            "population" : 123456,
+            "description_small": "some small description",
+            "description": "some description",
+            "image": "https://mockurl",
+            "country_info": {
+                "images": [],
+                "flag": "https://mockurl"
+            }
+        }
+    ]
+}

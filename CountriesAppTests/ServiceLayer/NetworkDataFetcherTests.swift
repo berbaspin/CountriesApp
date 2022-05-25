@@ -12,43 +12,28 @@ final class NetworkDataFetcherTests: XCTestCase {
     private var sut: NetworkDataFetcherProtocol?
     private var networkService: NetworkServiceProtocol!
     private var session: MockURLSession!
+    private var jsonLoader: LocalJSONLoader!
 
     override func setUp() {
         super.setUp()
         let dataTask = MockURLSessionDataTask()
         session = MockURLSession(dataTask: dataTask)
         networkService = NetworkService(session: session)
+        jsonLoader = LocalJSONLoader()
         sut = NetworkDataFetcher(networkService: networkService)
     }
 
     override func tearDown() {
         session = nil
         networkService = nil
+        jsonLoader = nil
         sut = nil
         super.tearDown()
     }
 
     func testGetCountriesSuccess() {
-        let mockJSONData = """
-        {
-        "next":"https://mockurl",
-        "countries":[
-        {
-        "name": "England",
-        "continent": "Eurasia",
-        "capital":"London",
-        "population" : 123456,
-        "description_small": "some small description",
-        "description": "some description",
-        "image": "https://mockurl",
-        "country_info": {
-            "images":[],
-            "flag": "https://mockurl"
-        }
-        }
-        ]
-        }
-        """.data(using: .utf8)
+        let mockFileName = "MockJSONData"
+        let mockJSONData = jsonLoader.load(filename: mockFileName)
 
         guard let url = URL(string: "https://mockurl") else {
             XCTFail("URL can't be empty")

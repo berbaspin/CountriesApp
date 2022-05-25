@@ -51,4 +51,25 @@ final class CoreDataManagerTests: XCTestCase {
         XCTAssertEqual(getCountry.first?.flag, country.countryInfo.flag)
         XCTAssertEqual(getCountry.first?.images?.count, images.count)
     }
+
+    func testSaveDataWithoutDuplicates() {
+        let countryInfo = Country.CountryInfo(images: [], flag: "some flag")
+        let country = Country(
+            name: "Foo",
+            continent: "Bar",
+            capital: "Baz",
+            population: 123,
+            descriptionSmall: nil,
+            description: "some description",
+            image: "some image",
+            countryInfo: countryInfo
+        )
+
+        coreDataManager.saveCountry(country: country)
+        coreDataManager.saveCountry(country: country)
+
+        let getCountry = coreDataManager.getCountries()
+
+        XCTAssertEqual(getCountry.count, 1)
+    }
 }

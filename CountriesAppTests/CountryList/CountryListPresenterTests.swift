@@ -17,6 +17,7 @@ final class CountryListPresenterTests: XCTestCase {
     private var networkDataFetcher: NetworkDataFetcherProtocol!
     private var networkService: NetworkServiceProtocol!
     private var session: MockURLSession!
+    private var jsonLoader: LocalJSONLoader!
 
     override func setUp() {
         super.setUp()
@@ -34,6 +35,7 @@ final class CountryListPresenterTests: XCTestCase {
             coreDataManager: coreDataManager,
             router: router
         )
+        jsonLoader = LocalJSONLoader()
     }
 
     override func tearDown() {
@@ -46,26 +48,8 @@ final class CountryListPresenterTests: XCTestCase {
     }
 
     func testGetLatestCountries() {
-        let mockJSONData = """
-        {
-        "next":"https://mockurl",
-        "countries":[
-        {
-        "name": "Абхазия",
-        "continent": "Eurasia",
-        "capital":"Сухум",
-        "population" : 243564 ,
-        "description_small": "some small description",
-        "description": "some description",
-        "image": "https://mockurl",
-        "country_info": {
-            "images":[],
-            "flag": "https://mockurl"
-        }
-        }
-        ]
-        }
-        """.data(using: .utf8)
+        let mockFileName = "MockJSONData"
+        let mockJSONData = jsonLoader.load(filename: mockFileName)
         session.nextData = mockJSONData
 
         sut?.getLatestCountries()
@@ -75,26 +59,8 @@ final class CountryListPresenterTests: XCTestCase {
     }
 
     func testGetMoreCountries() {
-        let mockJSONData = """
-        {
-        "next":"https://mockurl",
-        "countries":[
-        {
-        "name": "Абхазия",
-        "continent": "Eurasia",
-        "capital":"Сухум",
-        "population" : 243564 ,
-        "description_small": "some small description",
-        "description": "some description",
-        "image": "https://mockurl",
-        "country_info": {
-            "images":[],
-            "flag": "https://mockurl"
-        }
-        }
-        ]
-        }
-        """.data(using: .utf8)
+        let mockFileName = "MockJSONData"
+        let mockJSONData = jsonLoader.load(filename: mockFileName)
         session.nextData = mockJSONData
 
         sut?.getMoreCountries()
