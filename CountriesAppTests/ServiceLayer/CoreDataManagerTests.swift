@@ -1,5 +1,5 @@
 //
-//  CoreDataTests.swift
+//  CoreDataManagerTests.swift
 //  CountriesAppTests
 //
 //  Created by Dmitry Babaev on 17.05.2022.
@@ -9,21 +9,19 @@ import CoreData
 @testable import CountriesApp
 import XCTest
 
-final class CoreDataTests: XCTestCase {
+final class CoreDataManagerTests: XCTestCase {
 
-    // MARK: - Private Properties
     // swiftlint:disable implicitly_unwrapped_optional
     private var coreDataManager: CoreDataManager!
 
-    // MARK: - Lifecycle
-    override func setUpWithError() throws {
-        try super.setUpWithError()
+    override func setUp() {
+        super.setUp()
         coreDataManager = CoreDataManager(persistentStoreDescriptionType: NSInMemoryStoreType)
     }
 
-    override func tearDownWithError() throws {
+    override func tearDown() {
         coreDataManager = nil
-        try super.tearDownWithError()
+        super.tearDown()
     }
 
     func testSaveAndGetCountrySuccess() {

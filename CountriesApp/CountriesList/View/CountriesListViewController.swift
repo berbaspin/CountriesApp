@@ -57,10 +57,12 @@ private extension CountriesListViewController {
 // MARK: - CountriesListViewProtocol
 
 extension CountriesListViewController: CountriesListViewProtocol {
-    func setCountries(_ countries: [CountryViewData], showPagination: Bool) {
-        isSpinnerHidden = showPagination
-        countriesToDisplay = countries
-        countriesTableView.reloadData()
+    func setCountries(_ countries: [CountryViewData], showPagination: Bool, duration: Double) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
+            self.isSpinnerHidden = showPagination
+            self.countriesToDisplay = countries
+            self.countriesTableView.reloadData()
+        }
     }
 }
 

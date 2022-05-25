@@ -8,22 +8,24 @@
 import XCTest
 
 final class NetworkDataFetcherTests: XCTestCase {
-    
-    // MARK: - Private Properties
+
     private var sut: NetworkDataFetcherProtocol?
     private var networkService: NetworkServiceProtocol!
-    private let session = MockURLSession()
+    private var session: MockURLSession!
 
-    // MARK: - Lifecycle
-    override func setUpWithError() throws {
-        try super.setUpWithError()
-
+    override func setUp() {
+        super.setUp()
+        let dataTask = MockURLSessionDataTask()
+        session = MockURLSession(dataTask: dataTask)
         networkService = NetworkService(session: session)
         sut = NetworkDataFetcher(networkService: networkService)
     }
 
-    override func tearDownWithError() throws {
-        try super.tearDownWithError()
+    override func tearDown() {
+        session = nil
+        networkService = nil
+        sut = nil
+        super.tearDown()
     }
 
     func testGetCountriesSuccess() {
@@ -49,46 +51,62 @@ final class NetworkDataFetcherTests: XCTestCase {
         """.data(using: .utf8)
 
         guard let url = URL(string: "https://mockurl") else {
-            print("URL can't be empty")
+            XCTFail("URL can't be empty")
             return
         }
         session.nextData = mockJSONData
 
-        sut?.getCountries(from: url) { countries, next in
+        let expectation = expectation(description: "Get countries success")
+
+        sut?.getCountries(from: url) { countries, next, _ in
             XCTAssertEqual(countries.count, 1)
             XCTAssertEqual(countries.first?.name, "England")
             XCTAssertEqual(countries.first?.population, 123_456)
             XCTAssertNotNil(next)
+
+            expectation.fulfill()
         }
+        waitForExpectations(timeout: 5)
     }
 
     func testGetCountriesEmptyData() {
         let mockJSONData = "{}".data(using: .utf8)
 
         guard let url = URL(string: "https://mockurl") else {
-            print("URL can't be empty")
+            XCTFail("URL can't be empty")
             return
         }
         session.nextData = mockJSONData
 
-        sut?.getCountries(from: url) { countries, next in
+        let expectation = expectation(description: "Get countries empty data")
+
+        sut?.getCountries(from: url) { countries, next, _ in
             XCTAssertEqual(countries.count, 0)
             XCTAssertNil(next)
+
+            expectation.fulfill()
         }
+
+        waitForExpectations(timeout: 5)
     }
 
     func testGetCountriesFailure() {
         let expectedError = NSError(domain: "Some error", code: 0)
 
         guard let url = URL(string: "https://mockurl") else {
-            print("URL can't be empty")
+            XCTFail("URL can't be empty")
             return
         }
         session.nextError = expectedError
 
-        sut?.getCountries(from: url) { countries, next in
-            XCTAssertEqual(countries.count, 0)
-            XCTAssertNil(next)
+        let expectation = expectation(description: "Get contries failure")
+
+        sut?.getCountries(from: url) { _, _, error in
+            XCTAssertNotNil(error)
+
+            expectation.fulfill()
         }
+
+        waitForExpectations(timeout: 5)
     }
 }

@@ -9,25 +9,26 @@
 import XCTest
 
 final class NetworkServiceTests: XCTestCase {
-    
-    // MARK: - Private Properties
-    private var sut: NetworkService?
-    private let session = MockURLSession()
 
-    // MARK: - Lifecycle
-    override func setUpWithError() throws {
-        try super.setUpWithError()
+    private var sut: NetworkService?
+    private var session: MockURLSession!
+
+    override func setUp() {
+        super.setUp()
+        let dataTask = MockURLSessionDataTask()
+        session = MockURLSession(dataTask: dataTask)
         sut = NetworkService(session: session)
     }
 
-    override func tearDownWithError() throws {
+    override func tearDown() {
+        session = nil
         sut = nil
-        try super.tearDownWithError()
+        super.tearDown()
     }
 
     func testRequestWithURL() {
         guard let url = URL(string: "https://mockurl") else {
-            print("URL can't be empty")
+            XCTFail("URL can't be empty")
             return
         }
         sut?.request(from: url) { _ in }
@@ -40,7 +41,7 @@ final class NetworkServiceTests: XCTestCase {
         session.nextDataTask = dataTask
 
         guard let url = URL(string: "https://mockurl") else {
-            print("URL can't be empty")
+            XCTFail("URL can't be empty")
             return
         }
         sut?.request(from: url) { _ in }
@@ -51,41 +52,44 @@ final class NetworkServiceTests: XCTestCase {
     func testRequestReturnedData() {
         let expectedData = "{}".data(using: .utf8)
         guard let url = URL(string: "https://mockurl") else {
-            print("URL can't be empty")
+            XCTFail("URL can't be empty")
             return
         }
         session.nextData = expectedData
-        var actualData: Data?
+
+        let expectation = expectation(description: "Request returned data")
+
         sut?.request(from: url) { result in
             switch result {
             case .success(let data):
-                actualData = data
+                XCTAssertNotNil(data)
             case .failure(let error):
                 XCTFail("Expected to be a success but got a failure with \(error)")
             }
+            expectation.fulfill()
         }
-
-        XCTAssertNotNil(actualData)
+        waitForExpectations(timeout: 5)
     }
 
     func testRequestReturnedFailure() {
         let expectedError = NSError(domain: "Page not found", code: 404)
         guard let url = URL(string: "https://mockurl") else {
-            print("URL can't be empty")
+            XCTFail("URL can't be empty")
             return
         }
         session.nextError = expectedError
 
-        var catchError: Error?
+        let expectation = expectation(description: "Request returned Failure")
+
         sut?.request(from: url) { result in
             switch result {
             case .success(let data):
-                print(data)
+                XCTFail("Expected to be a failure but got a success with data \(data)")
             case .failure(let error):
-                catchError = error
+                XCTAssertNotNil(error)
             }
+            expectation.fulfill()
         }
-
-        XCTAssertNotNil(catchError)
+        waitForExpectations(timeout: 5)
     }
 }

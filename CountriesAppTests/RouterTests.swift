@@ -9,21 +9,23 @@
 import XCTest
 
 final class RouterTests: XCTestCase {
-    
-    // MARK: - Private Properties
-    private var sut: RouterProtocol?
-    private let navigationController = MockNavigationController()
-    private let assemblyBuilder = AssenlyBuilder()
 
-    // MARK: - Lifecycle
-    override func setUpWithError() throws {
-        try super.setUpWithError()
+    private var sut: RouterProtocol?
+    private var navigationController: MockNavigationController!
+    private var assemblyBuilder: AssemblyBuilderProtocol!
+
+    override func setUp() {
+        super.setUp()
+
+        assemblyBuilder = AsseblyBuilder()
+        navigationController = MockNavigationController()
         sut = Router(navigationController: navigationController, assemblyBuilder: assemblyBuilder)
     }
 
-    override func tearDownWithError() throws {
+    override func tearDown() {
+        assemblyBuilder = nil
         sut = nil
-        try super.tearDownWithError()
+        super.tearDown()
     }
 
     func testRouter() {

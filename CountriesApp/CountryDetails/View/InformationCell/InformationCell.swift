@@ -13,7 +13,7 @@ final class InformationCell: UITableViewCell {
     @IBOutlet private var fieldLabel: UILabel!
     @IBOutlet private var countryDetailLabel: UILabel!
 
-    func setup(with model: CountryInformation, text: String) {
+    func setup(with model: CountryInformation.CountryInformationType, text: String) {
         fieldImage.image = UIImage(systemName: model.icon)
         fieldLabel.text = model.rawValue.capitalized
         countryDetailLabel.text = text

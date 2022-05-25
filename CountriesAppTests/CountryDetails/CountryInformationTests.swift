@@ -10,7 +10,7 @@ import XCTest
 
 final class CountryInformationTests: XCTestCase {
     // MARK: - Private Properties
-    private var sut: CountryInformation?
+    private var sut: CountryInformation.CountryInformationType?
 
     // MARK: - Lifecycle
     override func setUpWithError() throws {

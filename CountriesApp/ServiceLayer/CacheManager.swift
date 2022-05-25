@@ -16,7 +16,7 @@ final class CacheManager: CacheManagerProtocol {
 
     static let shared = CacheManager()
 
-    private init() {}
+    init() {}
 
     func saveData(with data: Data, response: URLResponse) {
         guard let url = response.url else {

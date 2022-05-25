@@ -2,24 +2,31 @@
 //  CountryInformation.swift
 //  CountriesApp
 //
-//  Created by Dmitry Babaev on 28.04.2022.
+//  Created by Dmitry Babaev on 25.05.2022.
 //
 
-enum CountryInformation: String, CaseIterable {
-    case capital
-    case population
-    case continent
+import Foundation
+
+struct CountryInformation {
+    var type: CountryInformationType
+    var text: String
 }
 
 extension CountryInformation {
-    var icon: String {
-        switch self {
-        case .capital:
-            return "star"
-        case .population:
-            return "face.smiling"
-        case .continent:
-            return "globe.asia.australia"
+    enum CountryInformationType: String {
+        case capital
+        case population
+        case continent
+
+        var icon: String {
+            switch self {
+            case .capital:
+                return "star"
+            case .population:
+                return "face.smiling"
+            case .continent:
+                return "globe.asia.australia"
+            }
         }
     }
 }

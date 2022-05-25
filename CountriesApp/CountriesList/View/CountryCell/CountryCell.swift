@@ -13,7 +13,7 @@ final class CountryCell: UITableViewCell {
     @IBOutlet private var nameLabel: UILabel!
     @IBOutlet private var capitalLabel: UILabel!
     @IBOutlet private var descriptionLabel: UILabel!
-    private var imageRequest: URLSessionDataTask?
+    private var imageRequest: URLSessionDataTaskProtocol?
 
     override func prepareForReuse() {
         super.prepareForReuse()

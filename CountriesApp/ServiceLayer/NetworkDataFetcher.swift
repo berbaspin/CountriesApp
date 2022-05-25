@@ -8,7 +8,7 @@
 import Foundation
 
 protocol NetworkDataFetcherProtocol {
-    func getCountries(from url: URL, response: @escaping ([Country], URL?) -> Void)
+    func getCountries(from url: URL, response: @escaping ([Country], URL?, Error?) -> Void)
 }
 
 final class NetworkDataFetcher: NetworkDataFetcherProtocol {
@@ -21,13 +21,14 @@ final class NetworkDataFetcher: NetworkDataFetcherProtocol {
         decoder.keyDecodingStrategy = .convertFromSnakeCase
     }
 
-    func getCountries(from url: URL, response: @escaping ([Country], URL?) -> Void) {
+    func getCountries(from url: URL, response: @escaping ([Country], URL?, Error?) -> Void) {
         networkService.request(from: url) { [unowned self] result in
             switch result {
             case .success(let data):
                 let decoded = try? self.decoder.decode(CountriesWrapped.self, from: data)
-                response(decoded?.countries ?? [], URL(string: decoded?.next ?? ""))
+                response(decoded?.countries ?? [], URL(string: decoded?.next ?? ""), nil)
             case .failure(let error):
+                response([], nil, error)
                 print("Error received requesting: \(error.localizedDescription)")
             }
         }

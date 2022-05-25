@@ -11,8 +11,9 @@ extension UIImageView {
 
     func loadUsingCache(
         from urlString: String,
+        imageManager: ImageManagerProtocol = ImageManager.shared,
         placeholder: UIImage? = UIImage(named: "imagePlaceholder")
-    ) -> URLSessionDataTask? {
+    ) -> URLSessionDataTaskProtocol? {
         self.image = placeholder
         guard let imageUrl = URL(string: urlString) else {
             return nil
@@ -23,8 +24,11 @@ extension UIImageView {
             image = cachedImage
         }
 
-        let task = ImageManager.shared.getImage(from: imageUrl) { [weak self] data, response in
+        let task = imageManager.getImage(from: imageUrl) { [weak self] data, response, _ in
             guard let self = self else {
+                return
+            }
+            guard let data = data, let response = response else {
                 return
             }
             guard let downloadedImage = UIImage(data: data) else {

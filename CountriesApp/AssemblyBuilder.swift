@@ -12,7 +12,7 @@ protocol AssemblyBuilderProtocol {
     func createCountryDetailsModule(country: CountryViewData, router: RouterProtocol) -> UIViewController
 }
 
-final class AssenlyBuilder: AssemblyBuilderProtocol {
+final class AsseblyBuilder: AssemblyBuilderProtocol {
     func createCoutriesListModule(router: RouterProtocol) -> UIViewController {
         let countriesListViewController = CountriesListViewController()
         let networkService = NetworkService(session: URLSession.shared)

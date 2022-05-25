@@ -19,6 +19,7 @@ final class CountryDetailsViewController: UIViewController {
     private var countryToDisplay: CountryViewData?
     private var isImagesPageControlShown = false
     private var images = [String]()
+    private var countryInformation = [CountryInformation]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -57,12 +58,18 @@ private extension CountryDetailsViewController {
 
 extension CountryDetailsViewController: CountryDetailViewProtocol {
 
-    func setData(country: CountryViewData, images: [String], showPageControl: Bool) {
+    func setData(
+        country: CountryViewData,
+        images: [String],
+        countryInformation: [CountryInformation],
+        showPageControl: Bool
+    ) {
         countryToDisplay = country
         nameLabel.text = country.name
         descriptionLabel.text = country.description
 
         self.images = images
+        self.countryInformation = countryInformation
         isImagesPageControlShown = showPageControl
     }
 }
@@ -108,26 +115,14 @@ extension CountryDetailsViewController: UICollectionViewDelegateFlowLayout {
 
 extension CountryDetailsViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        3
+        countryInformation.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(
             withIdentifier: String(describing: InformationCell.self), for: indexPath
         ) as? InformationCell
-        guard let countryToDisplay = countryToDisplay else {
-            return UITableViewCell()
-        }
-        let countryInformation = CountryInformation.allCases[indexPath.row]
-
-        switch countryInformation {
-        case .capital:
-            cell?.setup(with: countryInformation, text: countryToDisplay.capital)
-        case .population:
-            cell?.setup(with: countryInformation, text: countryToDisplay.population)
-        case .continent:
-            cell?.setup(with: countryInformation, text: countryToDisplay.continent)
-        }
+        cell?.setup(with: countryInformation[indexPath.row].type, text: countryInformation[indexPath.row].text)
 
         return cell ?? UITableViewCell()
     }

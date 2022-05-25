@@ -10,7 +10,7 @@ import UIKit
 final class CountryDetailsCollectionViewCell: UICollectionViewCell {
 
     @IBOutlet private var countryImageView: UIImageView!
-    private var imageRequest: URLSessionDataTask?
+    private var imageRequest: URLSessionDataTaskProtocol?
 
     override func prepareForReuse() {
         super.prepareForReuse()

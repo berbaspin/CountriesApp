@@ -8,7 +8,7 @@
 import Foundation
 
 protocol CountriesListViewProtocol: AnyObject {
-    func setCountries(_ countries: [CountryViewData], showPagination: Bool)
+    func setCountries(_ countries: [CountryViewData], showPagination: Bool, duration: Double)
 }
 
 protocol CountriesListPresenterProtocol {
@@ -86,9 +86,7 @@ final class CountriesListPresenter: CountriesListPresenterProtocol {
         }
         stopLoading = isSpinnerHidden
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
-            self.view?.setCountries(self.countriesToDisplay, showPagination: self.stopLoading)
-        }
+        self.view?.setCountries(self.countriesToDisplay, showPagination: self.stopLoading, duration: duration)
     }
 
     func getLatestCountries() {
@@ -105,9 +103,9 @@ final class CountriesListPresenter: CountriesListPresenterProtocol {
             }
 
             self.countriesToDisplay = Array(countries.prefix(self.numberOfCountriesToReturn))
-            DispatchQueue.main.async {
-                self.view?.setCountries(self.countriesToDisplay, showPagination: false)
-            }
+
+            self.view?.setCountries(self.countriesToDisplay, showPagination: false, duration: 0)
+
         }
     }
 
@@ -116,7 +114,7 @@ final class CountriesListPresenter: CountriesListPresenterProtocol {
             return
         }
 
-        networkDataFetcher.getCountries(from: url) { [weak self] countries, url in
+        networkDataFetcher.getCountries(from: url) { [weak self] countries, url, _ in
             guard let self = self else {
                 return
             }

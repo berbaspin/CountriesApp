@@ -10,26 +10,15 @@ import XCTest
 
 final class CountryDetailsPresenterTests: XCTestCase {
 
-    // MARK: - Private Properties
     private var sut: CountryDetailsPresenter?
-    private var viewController: CountryDetailsDisplayLogicSpy!
+    private var viewController: MockCountryDetailsDisplayLogic!
     private var country: CountryViewData?
 
-    // MARK: - Lifecycle
-    override func setUpWithError() throws {
-        try super.setUpWithError()
+    override func setUp() {
+        super.setUp()
 
-        let countryViewData = CountryViewData(
-            name: "Foo",
-            capital: "Bar",
-            population: "Baz",
-            continent: "some continent",
-            description: "some description",
-            shortDescription: "some shortDescription",
-            flag: "some flag",
-            images: ["https://mockurl1", "https://mockurl2"]
-        )
-        let detailsViewController = CountryDetailsDisplayLogicSpy()
+        let countryViewData = CountryViewData.mock
+        let detailsViewController = MockCountryDetailsDisplayLogic()
         let detailsPresenter = CountryDetailsPresenter(view: detailsViewController, country: countryViewData)
 
         sut = detailsPresenter
@@ -37,10 +26,10 @@ final class CountryDetailsPresenterTests: XCTestCase {
         country = countryViewData
     }
 
-    override func tearDownWithError() throws {
+    override func tearDown() {
         sut = nil
         viewController = nil
-        try super.tearDownWithError()
+        super.tearDown()
     }
 
     func testGetData() {
