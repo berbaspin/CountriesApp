@@ -47,6 +47,8 @@
 		13DB8A70283E6CB3009DA207 /* MockJSONData.json in Resources */ = {isa = PBXBuildFile; fileRef = 13DB8A6F283E6915009DA207 /* MockJSONData.json */; };
 		13DB8A71283E6CE1009DA207 /* MockJSONData.json in Resources */ = {isa = PBXBuildFile; fileRef = 13DB8A6F283E6915009DA207 /* MockJSONData.json */; };
 		13DB8A75283E903C009DA207 /* LocalJSONLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13DB8A74283E903C009DA207 /* LocalJSONLoader.swift */; };
+		13DB8A78283EA234009DA207 /* CountriesList.png in Resources */ = {isa = PBXBuildFile; fileRef = 13DB8A76283EA234009DA207 /* CountriesList.png */; };
+		13DB8A79283EA234009DA207 /* CountryDetails.png in Resources */ = {isa = PBXBuildFile; fileRef = 13DB8A77283EA234009DA207 /* CountryDetails.png */; };
 		13E1641627FD7DAE0060F58C /* CountryViewData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13E1641527FD7DAE0060F58C /* CountryViewData.swift */; };
 		13E1641927FD85840060F58C /* ImageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13E1641827FD85840060F58C /* ImageManager.swift */; };
 		13E1641B27FD895C0060F58C /* UIImageView+Load.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13E1641A27FD895B0060F58C /* UIImageView+Load.swift */; };
@@ -122,6 +124,8 @@
 		13DB8A6D283E210A009DA207 /* CountryInformation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryInformation.swift; sourceTree = "<group>"; };
 		13DB8A6F283E6915009DA207 /* MockJSONData.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = MockJSONData.json; sourceTree = "<group>"; };
 		13DB8A74283E903C009DA207 /* LocalJSONLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalJSONLoader.swift; sourceTree = "<group>"; };
+		13DB8A76283EA234009DA207 /* CountriesList.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = CountriesList.png; sourceTree = "<group>"; };
+		13DB8A77283EA234009DA207 /* CountryDetails.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = CountryDetails.png; sourceTree = "<group>"; };
 		13E1641527FD7DAE0060F58C /* CountryViewData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryViewData.swift; sourceTree = "<group>"; };
 		13E1641827FD85840060F58C /* ImageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageManager.swift; sourceTree = "<group>"; };
 		13E1641A27FD895B0060F58C /* UIImageView+Load.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Load.swift"; sourceTree = "<group>"; };
@@ -238,6 +242,8 @@
 			isa = PBXGroup;
 			children = (
 				131A709E28099E0900C8EFD4 /* README.md */,
+				13DB8A76283EA234009DA207 /* CountriesList.png */,
+				13DB8A77283EA234009DA207 /* CountryDetails.png */,
 				137A9C7027FB749600282214 /* CountriesApp */,
 				132E351E283272610055672E /* CountriesAppTests */,
 				137A9C6F27FB749600282214 /* Products */,
@@ -526,6 +532,8 @@
 				137A9C7E27FB749800282214 /* Assets.xcassets in Resources */,
 				131A709A28096AE500C8EFD4 /* Localizable.strings in Resources */,
 				13E1642E27FDFCD80060F58C /* InformationCell.xib in Resources */,
+				13DB8A79283EA234009DA207 /* CountryDetails.png in Resources */,
+				13DB8A78283EA234009DA207 /* CountriesList.png in Resources */,
 				13E2FDFF27FC8ABC00B88326 /* CountriesListViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
