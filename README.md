@@ -1,7 +1,7 @@
 #  CountriesApp
 
-## Preview App ##
-<img src="https://github.com/berbaspin/CountriesApp/blob/main/CountriesList.png" width="200"><img src="https://github.com/berbaspin/CountriesApp/blob/main/CountryDetails.png" width="200">
+## App Previews ##
+<img src="https://github.com/berbaspin/CountriesApp/blob/main/CountriesList.png" width="200">   <img src="https://github.com/berbaspin/CountriesApp/blob/main/CountryDetails.png" width="200">
 
 ## Requirements ##
 
