@@ -17,7 +17,6 @@ final class CountryListPresenterTests: XCTestCase {
     private var networkDataFetcher: NetworkDataFetcherProtocol!
     private var networkService: NetworkServiceProtocol!
     private var session: MockURLSession!
-    private var jsonLoader: LocalJSONLoader!
 
     override func setUp() {
         super.setUp()
@@ -35,13 +34,14 @@ final class CountryListPresenterTests: XCTestCase {
             coreDataManager: coreDataManager,
             router: router
         )
-        jsonLoader = LocalJSONLoader()
     }
 
     override func tearDown() {
         viewController = nil
         session = nil
         router = nil
+        networkService = nil
+        networkDataFetcher = nil
         sut = nil
 
         super.tearDown()
@@ -49,7 +49,7 @@ final class CountryListPresenterTests: XCTestCase {
 
     func testGetLatestCountries() {
         let mockFileName = "MockJSONData"
-        let mockJSONData = jsonLoader.load(filename: mockFileName)
+        let mockJSONData = Bundle.loadJSONData(filename: mockFileName)
         session.nextData = mockJSONData
 
         sut?.getLatestCountries()
@@ -60,7 +60,7 @@ final class CountryListPresenterTests: XCTestCase {
 
     func testGetMoreCountries() {
         let mockFileName = "MockJSONData"
-        let mockJSONData = jsonLoader.load(filename: mockFileName)
+        let mockJSONData = Bundle.loadJSONData(filename: mockFileName)
         session.nextData = mockJSONData
 
         sut?.getMoreCountries()
